@@ -1,15 +1,31 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace TPUM
+namespace CalculatorApp
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            Calculator calculator = new Calculator();
+
+            Console.WriteLine("Prosty kalkulator - dodawanie");
+            Console.Write("Podaj pierwszą liczbę: ");
+            int a = Convert.ToInt32(Console.ReadLine());
+
+            Console.Write("Podaj drugą liczbę: ");
+            int b = Convert.ToInt32(Console.ReadLine());
+
+            int result = calculator.Add(a, b);
+
+            Console.WriteLine($"Wynik dodawania {a} + {b} = {result}");
+        }
+    }
+
+    internal class Calculator
+    {
+        internal int Add(int a, int b)
+        {
+            return a + b;
         }
     }
 }
