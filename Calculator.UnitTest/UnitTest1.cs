@@ -34,6 +34,7 @@ namespace CalculatorTests
 
             // Assert
             Assert.AreEqual(7, result);
+
         }
     }
 }
