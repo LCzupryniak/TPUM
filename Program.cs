@@ -8,7 +8,7 @@ namespace CalculatorApp
         {
             Calculator calculator = new Calculator();
 
-            Console.WriteLine("Prosty kalkulator - dodawanie");
+            Console.WriteLine("Dodawanie");
             Console.Write("Podaj pierwszą liczbę: ");
             int a = Convert.ToInt32(Console.ReadLine());
 
@@ -21,9 +21,9 @@ namespace CalculatorApp
         }
     }
 
-    internal class Calculator
+    public class Calculator
     {
-        internal int Add(int a, int b)
+        public int Add(int a, int b)
         {
             return a + b;
         }
