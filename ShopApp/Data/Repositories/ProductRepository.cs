@@ -1,9 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Data.Interfaces;
+using Data.Models;
 
-namespace ShopApp.Domain.Repositories
+namespace Data.Repositories
 {
-    public class ProductRepository : IProductRepository
+    internal class ProductRepository : IProductRepository
     {
         private List<Product> _productStorage;
         private object _lockObject;
@@ -83,3 +88,4 @@ namespace ShopApp.Domain.Repositories
             }
         }
     }
+}

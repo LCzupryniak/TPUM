@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Data.Models;
 
-namespace ShopApp.Domain.Interfaces
+namespace Data.Interfaces
 {
     public interface IProductRepository
     {
@@ -10,12 +14,5 @@ namespace ShopApp.Domain.Interfaces
         List<Product> GetAllProducts();
         void UpdateProduct(Product product);
         void RemoveProduct(int productId);
-    }
-
-    public interface IOrderRepository
-    {
-        void CreateOrder(Order order);
-        Order GetOrderById(int orderId);
-        List<Order> GetOrdersByCustomer(int customerId);
     }
 }

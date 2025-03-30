@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace ShopApp.Domain.Models
+namespace Data.Models
 {
     public class Order
     {
@@ -19,7 +22,6 @@ namespace ShopApp.Domain.Models
             CurrentStatus = OrderStatus.Created;
         }
     }
-
     public enum OrderStatus
     {
         Created,
