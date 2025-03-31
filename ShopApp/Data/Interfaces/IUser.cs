@@ -14,6 +14,7 @@ namespace Data.Interfaces
         string Address { get; }
         string PhoneNumber { get; }
         bool IsActive { get; }
+        void SetActiveStatus(bool isActive);
     }
 
     public enum OrderStatus

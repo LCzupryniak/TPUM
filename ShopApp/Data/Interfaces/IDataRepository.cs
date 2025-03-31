@@ -44,5 +44,6 @@ namespace Data.Interfaces
         public abstract string Address { get; }
         public abstract string PhoneNumber { get; }
         public abstract bool IsActive { get; }
+        public abstract void SetActiveStatus(bool isActive);
     }
 }
