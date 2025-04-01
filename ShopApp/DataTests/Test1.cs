@@ -3,11 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using Data.Interfaces;
 
-// Zakładamy, że klasy modelu znajdują się w przestrzeni nazw ShopSystem.DataLayer
-// Należy dostosować nazwę przestrzeni nazw do faktycznej struktury projektu
 namespace DataTests.Tests
 {
-    // Korzystamy z wewnętrznych klas implementacyjnych poprzez fabryki
     public class DataLayerFactory
     {
         // Fabryka do tworzenia produktów
