@@ -116,7 +116,7 @@ namespace Data.Models
             _user.UpdateContactInfo(email, address, phoneNumber);
         }
 
-        public void SetActiveStatus(bool isActive)
+        public override void SetActiveStatus(bool isActive)
         {
             _user.SetActiveStatus(isActive);
         }

@@ -1,0 +1,58 @@
+<Window x:Class="ShopApp.Views.ProductCatalogView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Katalog produktów" FontSize="20" Margin="10"/>
+
+        <Grid Grid.Row="1" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBox Grid.Column="0" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Margin="0,0,10,0" 
+                     ToolTip="Wyszukaj produkt"/>
+
+            <ComboBox Grid.Column="1" ItemsSource="{Binding Categories}" SelectedItem="{Binding SelectedCategory}" 
+                      Width="150" Margin="0,0,10,0"/>
+
+            <Button Grid.Column="2" Content="Szukaj" Command="{Binding SearchCommand}"/>
+        </Grid>
+
+        <ListView Grid.Row="2" ItemsSource="{Binding Products}" SelectedItem="{Binding SelectedProduct}" Margin="10">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn Header="Nazwa" DisplayMemberBinding="{Binding Name}" Width="200"/>
+                    <GridViewColumn Header="Opis" DisplayMemberBinding="{Binding Description}" Width="250"/>
+                    <GridViewColumn Header="Kategoria" DisplayMemberBinding="{Binding Category}" Width="100"/>
+                    <GridViewColumn Header="Cena" DisplayMemberBinding="{Binding Price, StringFormat='{}{0:C}'}" Width="80"/>
+                    <GridViewColumn Header="Dostêpnoœæ" DisplayMemberBinding="{Binding StockQuantity}" Width="80"/>
+                </GridView>
+            </ListView.View>
+        </ListView>
+
+        <Grid Grid.Row="3" Margin="10">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Text="Iloœæ:" VerticalAlignment="Center" Margin="0,0,5,0"/>
+                <TextBox Text="{Binding Quantity}" Width="50" Margin="0,0,10,0"/>
+            </StackPanel>
+
+            <Button Grid.Column="1" Content="Dodaj do koszyka" Command="{Binding AddToCartCommand}" Margin="0,0,10,0"/>
+            <Button Grid.Column="2" Content="Szczegó³y produktu" Command="{Binding ShowProductDetailsCommand}"/>
+        </Grid>
+    </Grid>
+</Window>

@@ -31,7 +31,7 @@ namespace Logic.Models
                 throw new InvalidOperationException("Użytkownik o podanym adresie email już istnieje.");
             }
 
-            var newUser = new ConcreteUser(_nextUserId, name, email, address, phoneNumber);
+            var newUser = new IUser(_nextUserId, name, email, address, phoneNumber);
             _users.Add(_nextUserId, newUser);
             _emailIndex.Add(email, _nextUserId);
             _nextUserId++;
