@@ -42,7 +42,21 @@
                             <TextBlock Text="{Binding Name}" Grid.Column="0"/>
                             <TextBlock Text="{Binding Price}" Grid.Column="1"/>
                             <TextBlock Text="{Binding Stock}" Grid.Column="2"/>
-                            <TextBox Text="{Binding SelectedQuantity, UpdateSourceTrigger=PropertyChanged}" Grid.Column="3" />
+
+                            <!-- NumericUpDown-like TextBox -->
+                            <DockPanel Grid.Column="3">
+                                <TextBox Text="{Binding SelectedQuantity, UpdateSourceTrigger=PropertyChanged}" 
+                             PreviewTextInput="NumberValidationTextBox"
+                             VerticalContentAlignment="Center"
+                             Padding="2"
+                             Width="40"
+                             HorizontalContentAlignment="Center" />
+
+                                <StackPanel Orientation="Vertical" Width="20" VerticalAlignment="Center">
+                                    <RepeatButton Click="IncreaseQuantity_Click" Height="14" Padding="0" Margin="0" FontSize="10" Content="▲" />
+                                    <RepeatButton Click="DecreaseQuantity_Click" Height="14" Padding="0" Margin="0" FontSize="10" Content="▼" />
+                                </StackPanel>
+                            </DockPanel>
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
