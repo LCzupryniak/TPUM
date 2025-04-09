@@ -13,9 +13,9 @@ namespace Data.Implementation
         {
             return new List<IProduct>
             {
-                new Product("Telewizor SAMSUNG QLED 4K ", 2999.99),
-                new Product("Ekspres do kawy DELONGHI", 3300.50),
-                new Product("Hulajnoga elektryczna BLAUPUNKT", 1050.20)
+                new Product("Telewizor QLED 4K ", 2999.99),
+                new Product("Ekspres do kawy ", 3300.99),
+                new Product("Hulajnoga elektryczna ", 1050.99)
             };
         }
 

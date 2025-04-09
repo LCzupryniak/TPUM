@@ -5,15 +5,14 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Logic.API;
 using Model;
 
 namespace ViewModel
 {
     public class MainViewModel : INotifyPropertyChanged
     {
-        private readonly IShopService _shopService;
-        private readonly IProductStockNotifier _stockNotifier;
+        private readonly IShopModelService _shopService;
+        private readonly IProductStockModelNotifier _stockNotifier;
 
         public ObservableCollection<ProductViewModel> Products { get; set; }
 
@@ -22,7 +21,7 @@ namespace ViewModel
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainViewModel(IShopService shopService, IProductStockNotifier stockNotifier)
+        public MainViewModel(IShopModelService shopService, IProductStockModelNotifier stockNotifier)
         {
             _shopService = shopService;
             _stockNotifier = stockNotifier;
@@ -46,13 +45,13 @@ namespace ViewModel
                 Products.Add(new ProductViewModel
                 {
                     Name = product.Name,
-                    Price = product.Price,
+                    Price = (double)product.Price,
                     Stock = _stockNotifier.GetCurrentStock(product.Name)
                 });
             }
         }
 
-        private void OnStockChanged(object sender, EventArgs e)
+        private void OnStockChanged(object sender, System.EventArgs e)
         {
             foreach (var item in Products)
             {
@@ -64,10 +63,7 @@ namespace ViewModel
 
         public void OnPropertyChanged(string name)
         {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(name));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
     }
 }

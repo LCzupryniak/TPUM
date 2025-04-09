@@ -7,7 +7,7 @@ using Data.API;
 
 namespace Logic.API
 {
-    public interface IShopService
+    public interface IShopService 
     {
         List<IProduct> GetAvailableProducts();
         bool PurchaseProduct(string productName);

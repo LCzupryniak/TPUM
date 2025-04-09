@@ -19,5 +19,7 @@ namespace Logic.API
         {
             return new LogicFactoryImpl();
         }
+
+
     }
 }

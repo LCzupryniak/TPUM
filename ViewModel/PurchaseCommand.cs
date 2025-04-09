@@ -12,10 +12,10 @@ namespace ViewModel
 {
     public class PurchaseCommand : ICommand
     {
-        private readonly IShopService _shopService;
+        private readonly IShopModelService _shopService;
         private readonly ObservableCollection<ProductViewModel> _products;
 
-        public PurchaseCommand(IShopService shopService, ObservableCollection<ProductViewModel> products)
+        public PurchaseCommand(IShopModelService shopService, ObservableCollection<ProductViewModel> products)
         {
             _shopService = shopService;
             _products = products;
@@ -34,7 +34,7 @@ namespace ViewModel
                     for (int i = 0; i < product.SelectedQuantity; i++)
                     {
                         _shopService.PurchaseProduct(product.Name);
-                        product.Stock--; // lokalnie aktualizujemy
+                        product.Stock--;
                     }
 
                     product.SelectedQuantity = 0;

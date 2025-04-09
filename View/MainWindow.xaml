@@ -8,7 +8,7 @@
        Title="Sklep" Height="400" Width="500">
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Header="Plik">
+            <MenuItem Header="Zamówienie">
                 <MenuItem Header="Zakończ" Command="{Binding ExitCommand}" />
             </MenuItem>
         </Menu>
@@ -23,9 +23,9 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Text="Produkt" FontWeight="Bold" Grid.Column="0" />
-                <TextBlock Text="Cena" FontWeight="Bold" Grid.Column="1" />
+                <TextBlock Text="Cena (PLN)" FontWeight="Bold" Grid.Column="1" />
                 <TextBlock Text="Stan" FontWeight="Bold" Grid.Column="2" />
-                <TextBlock Text="Kup (ilość)" FontWeight="Bold" Grid.Column="3" />
+                <TextBlock Text="Wybierz ilość" FontWeight="Bold" Grid.Column="3" />
             </Grid>
 
             <ItemsControl ItemsSource="{Binding Products}">
@@ -48,7 +48,7 @@
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
-            <Button Content="Kup zaznaczone" Width="120" Margin="10" HorizontalAlignment="Right"
+            <Button Content="Kup" Width="120" Margin="10" HorizontalAlignment="Right"
                     Command="{Binding PurchaseCommand}" />
         </StackPanel>
     </DockPanel>
