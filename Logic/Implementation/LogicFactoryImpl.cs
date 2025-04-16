@@ -8,7 +8,7 @@ using Logic.API;
 
 namespace Logic.Implementation
 {
-    internal class LogicFactoryImpl : ILogicFactory
+    public class LogicFactoryImpl : ILogicFactory
     {
         private readonly IDataRepository _repository;
 
@@ -17,12 +17,12 @@ namespace Logic.Implementation
             _repository = DataFactory.CreateRepository(); // odwołanie do interfejsu API
         }
 
-        public IShopService CreateShopService()
+        public  IShopService CreateShopService()
         {
             return new ShopService(_repository);
         }
 
-        public IProductStockNotifier CreateStockNotifier()
+        public  IProductStockNotifier CreateStockNotifier()
         {
             return new ProductStockNotifier();
         }

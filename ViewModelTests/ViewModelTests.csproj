@@ -12,8 +12,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
+    <ProjectReference Include="..\Model\Client.Model.csproj" />
+    <ProjectReference Include="..\ViewModel\Client.ViewModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

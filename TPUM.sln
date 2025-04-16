@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.13.35913.81
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{212F03F1-E873-420D-8774-6B0883ABA887}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Data", "Data\Server.Data.csproj", "{212F03F1-E873-420D-8774-6B0883ABA887}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Logic", "Logic\Logic.csproj", "{20650B61-39B9-415C-8DAF-EA52C7D6B576}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Logic", "Logic\Server.Logic.csproj", "{20650B61-39B9-415C-8DAF-EA52C7D6B576}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Model", "Model\Model.csproj", "{CE05AE64-68FA-4B54-BDF8-11D750A2E2EE}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Model", "Model\Client.Model.csproj", "{CE05AE64-68FA-4B54-BDF8-11D750A2E2EE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModel", "ViewModel\ViewModel.csproj", "{4DE30618-D170-48D9-8B36-B512FB072378}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.ViewModel", "ViewModel\Client.ViewModel.csproj", "{4DE30618-D170-48D9-8B36-B512FB072378}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "View", "View\View.csproj", "{B82B1D72-77E3-4553-8881-959406273140}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.View", "View\Client.View.csproj", "{B82B1D72-77E3-4553-8881-959406273140}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTests", "DataTests\DataTests.csproj", "{7B254463-46D8-42DA-A33C-B213B9EEDFA0}"
 EndProject
@@ -20,6 +20,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ModelTests", "ModelTests\ModelTests.csproj", "{1FC0D0EF-BBFA-4C26-9A12-9571AC574FFA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ViewModelTests", "ViewModelTests\ViewModelTests.csproj", "{F16EE41A-AB74-42F0-BB71-54BF2013B78B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Data", "Client.Data\Client.Data.csproj", "{EC8921B1-06E9-412D-B94C-E7E3E457D518}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Presentation", "Server.Presentation\Server.Presentation.csproj", "{8F4D029F-9CA0-4B40-939B-32F08A30AB97}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +67,14 @@ Global
 		{F16EE41A-AB74-42F0-BB71-54BF2013B78B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F16EE41A-AB74-42F0-BB71-54BF2013B78B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F16EE41A-AB74-42F0-BB71-54BF2013B78B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC8921B1-06E9-412D-B94C-E7E3E457D518}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC8921B1-06E9-412D-B94C-E7E3E457D518}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC8921B1-06E9-412D-B94C-E7E3E457D518}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC8921B1-06E9-412D-B94C-E7E3E457D518}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8F4D029F-9CA0-4B40-939B-32F08A30AB97}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8F4D029F-9CA0-4B40-939B-32F08A30AB97}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8F4D029F-9CA0-4B40-939B-32F08A30AB97}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8F4D029F-9CA0-4B40-939B-32F08A30AB97}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

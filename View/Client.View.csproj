@@ -9,10 +9,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Logic\Logic.csproj" />
-    <ProjectReference Include="..\Model\Model.csproj" />
-    <ProjectReference Include="..\ViewModel\ViewModel.csproj" />
+    <ProjectReference Include="..\Client.Data\Client.Data.csproj" />
+    <ProjectReference Include="..\Data\Server.Data.csproj" />
+    <ProjectReference Include="..\Logic\Server.Logic.csproj" />
+    <ProjectReference Include="..\Model\Client.Model.csproj" />
+    <ProjectReference Include="..\ViewModel\Client.ViewModel.csproj" />
 	<FrameworkReference Include="Microsoft.WindowsDesktop.App.WPF" />
   </ItemGroup>
 

@@ -11,5 +11,6 @@ namespace Logic.API
     {
         List<IProduct> GetAvailableProducts();
         bool PurchaseProduct(string productName);
+        int GetStock(string productName);
     }
 }

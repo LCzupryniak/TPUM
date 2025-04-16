@@ -3,6 +3,7 @@ using Model;
 using ViewModel;
 using Logic.API;
 using System.Text.RegularExpressions;
+using Client.Data;
 
 namespace View
 {
@@ -43,5 +44,15 @@ namespace View
                 context.SelectedQuantity--;
             }
         }
+        //private async void Window_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    var socketClient = new WebSocketClient();
+        //    await socketClient.ConnectAsync("ws://localhost:8080/ws");
+
+        //    var shopService = new ShopModelService();
+        //    var stockNotifier = new ProductStockNotifier();
+
+        //    DataContext = new MainViewModel(shopService, stockNotifier, socketClient);
+        //}
     }
 }

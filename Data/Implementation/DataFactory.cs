@@ -7,11 +7,11 @@ using Data.API;
 
 namespace Data.Implementation
 {
-    public static class DataFactory
+    public abstract class DataFactory
     {
-        public static IDataRepository CreateRepository()
+        public static IDataRepository CreateRepository(IDataRepository? dataRepository = default(IDataRepository))
         {
-            return new DataRepository();
+            return dataRepository ?? new DataRepository();
         }
     }
 }
