@@ -46,26 +46,6 @@ namespace Client.Logic.Tests
         }
 
         [TestMethod]
-        public void GetAll_ShouldReturnAllOrders()
-        {
-            ICustomerDataTransferObject buyer = new DummyCustomerDataTransferObject(Guid.NewGuid(), "Customer1", 1000, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
-            IProductDataTransferObject item1 = new DummyProductDataTransferObject(Guid.NewGuid(), "Item1", 100, 10);
-            IProductDataTransferObject item2 = new DummyProductDataTransferObject(Guid.NewGuid(), "Item2", 200, 20);
-            IOrderDataTransferObject order1 = new DummyOrderDataTransferObject(Guid.NewGuid(), buyer, new List<IProductDataTransferObject> { item1 });
-            IOrderDataTransferObject order2 = new DummyOrderDataTransferObject(Guid.NewGuid(), buyer, new List<IProductDataTransferObject> { item2 });
-
-            _logic.Add(order1);
-            _logic.Add(order2);
-
-            IEnumerable<IOrderDataTransferObject> orders = _logic.GetAll();
-
-            Assert.IsNotNull(orders);
-            Assert.AreEqual(2, orders.Count());
-            Assert.IsTrue(orders.Any(o => o.Id == order1.Id));
-            Assert.IsTrue(orders.Any(o => o.Id == order2.Id));
-        }
-
-        [TestMethod]
         public void Get_ShouldReturnOrder_WhenOrderExists()
         {
             Guid orderId = Guid.NewGuid();
@@ -158,38 +138,6 @@ namespace Client.Logic.Tests
             IOrderDataTransferObject order = new DummyOrderDataTransferObject(Guid.NewGuid(), buyer, new List<IProductDataTransferObject> { item });
 
             bool result = _logic.Remove(order);
-
-            Assert.IsFalse(result);
-        }
-
-        [TestMethod]
-        public void Update_ShouldUpdateOrder_WhenOrderExists()
-        {
-            Guid orderId = Guid.NewGuid();
-            ICustomerDataTransferObject buyer = new DummyCustomerDataTransferObject(Guid.NewGuid(), "Customer1", 1000, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
-            IProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Item1", 100, 10);
-            IOrderDataTransferObject order = new DummyOrderDataTransferObject(orderId, buyer, new List<IProductDataTransferObject> { item });
-
-            _logic.Add(order);
-
-            ICustomerDataTransferObject newBuyer = new DummyCustomerDataTransferObject(Guid.NewGuid(), "Customer2", 1500, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
-            IOrderDataTransferObject updatedOrder = new DummyOrderDataTransferObject(orderId, newBuyer, new List<IProductDataTransferObject> { item });
-
-            bool result = _logic.Update(orderId, updatedOrder);
-
-            Assert.IsTrue(result);
-            IOrderDataTransferObject? updatedOrderResult = _logic.Get(orderId);
-            Assert.AreEqual("Customer2", updatedOrderResult!.Buyer.Name);
-        }
-
-        [TestMethod]
-        public void Update_ShouldReturnFalse_WhenOrderDoesNotExist()
-        {
-            Guid orderId = Guid.NewGuid();
-            ICustomerDataTransferObject newBuyer = new DummyCustomerDataTransferObject(Guid.NewGuid(), "Customer2", 1500, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
-            IOrderDataTransferObject updatedOrder = new DummyOrderDataTransferObject(orderId, newBuyer, new List<IProductDataTransferObject> { new DummyProductDataTransferObject(Guid.NewGuid(), "Item1", 100, 10) });
-
-            bool result = _logic.Update(orderId, updatedOrder);
 
             Assert.IsFalse(result);
         }

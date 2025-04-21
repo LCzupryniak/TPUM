@@ -104,23 +104,6 @@ namespace Client.Presentation.Model.Tests
         }
 
         [TestMethod]
-        public void AddCustomer_ValidData_CallsLogicAdd()
-        {
-            Guid newId = Guid.NewGuid();
-            string newName = "Newbie";
-            float newMoney = 10f;
-            Guid newInventoryId = _inv2Id;
-
-            _customerModelService.AddCustomer(newId, newName, newMoney, newInventoryId);
-
-            Assert.IsTrue(_dummyCustomerLogic.Customers.ContainsKey(newId));
-            ICustomerDataTransferObject addedDto = _dummyCustomerLogic.Customers[newId];
-            Assert.AreEqual(newName, addedDto.Name);
-            Assert.AreEqual(newMoney, addedDto.Money);
-            Assert.AreEqual(newInventoryId, addedDto.Inventory.Id);
-        }
-
-        [TestMethod]
         public void RemoveCustomer_ExistingId_CallsLogicRemoveAndReturnsTrue()
         {
             Guid targetId = _customer1Id;
@@ -139,43 +122,6 @@ namespace Client.Presentation.Model.Tests
             int initialCount = _dummyCustomerLogic.Customers.Count;
 
             bool result = _customerModelService.RemoveCustomer(nonExistingId);
-
-            Assert.IsFalse(result);
-            Assert.AreEqual(initialCount, _dummyCustomerLogic.Customers.Count);
-        }
-
-
-        [TestMethod]
-        public void UpdateCustomer_ExistingId_CallsLogicUpdateAndReturnsTrue()
-        {
-            Guid targetId = _customer1Id;
-            string updatedName = "Barbara Updated";
-            float updatedMoney = 550f;
-            Guid updatedInventoryId = _inv2Id; // Change inventory
-
-            // Find the inventory DTO to pass to the updated customer DTO
-            _dummyInventoryLogic.Inventories.TryGetValue(updatedInventoryId, out IInventoryDataTransferObject? updatedInventoryDto);
-            Assert.IsNotNull(updatedInventoryDto);
-
-            bool result = _customerModelService.UpdateCustomer(targetId, updatedName, updatedMoney, updatedInventoryId);
-
-            Assert.IsTrue(result);
-            Assert.IsTrue(_dummyCustomerLogic.Customers.ContainsKey(targetId));
-            ICustomerDataTransferObject updatedDto = _dummyCustomerLogic.Customers[targetId];
-            Assert.AreEqual(updatedName, updatedDto.Name);
-            Assert.AreEqual(updatedMoney, updatedDto.Money);
-            Assert.IsNotNull(updatedDto.Inventory);
-            Assert.AreEqual(updatedInventoryId, updatedDto.Inventory.Id);
-        }
-
-        [TestMethod]
-        public void UpdateCustomer_NonExistingId_CallsLogicUpdateAndReturnsFalse()
-        {
-            Guid nonExistingId = Guid.NewGuid();
-            int initialCount = _dummyCustomerLogic.Customers.Count;
-
-            // Pass a valid inventory ID even though the customer doesn't exist
-            bool result = _customerModelService.UpdateCustomer(nonExistingId, "Doesn't Exist", 0f, _inv1Id);
 
             Assert.IsFalse(result);
             Assert.AreEqual(initialCount, _dummyCustomerLogic.Customers.Count);

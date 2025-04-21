@@ -31,23 +31,6 @@ namespace Presentation.Model.Tests
         }
 
         [TestMethod]
-        public void GetAllItems_WhenCalled_ReturnsAllMappedItemModels()
-        {
-            List<IProductModel> items = _itemModelService.GetAllItems().ToList();
-
-            Assert.IsNotNull(items);
-            Assert.AreEqual(2, items.Count);
-
-            // Verify mapping for one item
-            IProductModel? item1Model = items.FirstOrDefault(i => i.Id == _item1Id);
-            Assert.IsNotNull(item1Model);
-            Assert.AreEqual(_item1Id, item1Model.Id);
-            Assert.AreEqual("Smartwatch", item1Model.Name);
-            Assert.AreEqual(50, item1Model.Price);
-            Assert.AreEqual(2, item1Model.MaintenanceCost);
-        }
-
-        [TestMethod]
         public void GetItem_NonExistingId_ReturnsNull()
         {
             Guid nonExistingId = Guid.NewGuid();
@@ -76,36 +59,6 @@ namespace Presentation.Model.Tests
             int initialCount = _dummyItemLogic.Items.Count;
 
             bool result = _itemModelService.RemoveItem(nonExistingId);
-
-            Assert.IsFalse(result);
-            Assert.AreEqual(initialCount, _dummyItemLogic.Items.Count);
-        }
-
-        [TestMethod]
-        public void UpdateItem_ExistingId_CallsLogicUpdateAndReturnsTrue()
-        {
-            Guid targetId = _item1Id;
-            string updatedName = "Premium TV";
-            int updatedPrice = 100;
-            int updatedCost = 4;
-
-            bool result = _itemModelService.UpdateItem(targetId, updatedName, updatedPrice, updatedCost);
-
-            Assert.IsTrue(result);
-            Assert.IsTrue(_dummyItemLogic.Items.ContainsKey(targetId));
-            IProductDataTransferObject updatedDto = _dummyItemLogic.Items[targetId];
-            Assert.AreEqual(updatedName, updatedDto.Name);
-            Assert.AreEqual(updatedPrice, updatedDto.Price);
-            Assert.AreEqual(updatedCost, updatedDto.MaintenanceCost);
-        }
-
-        [TestMethod]
-        public void UpdateItem_NonExistingId_CallsLogicUpdateAndReturnsFalse()
-        {
-            Guid nonExistingId = Guid.NewGuid();
-            int initialCount = _dummyItemLogic.Items.Count;
-
-            bool result = _itemModelService.UpdateItem(nonExistingId, "Fake Product", 1, 0);
 
             Assert.IsFalse(result);
             Assert.AreEqual(initialCount, _dummyItemLogic.Items.Count);

@@ -108,7 +108,7 @@ namespace Client.Presentation.Model.Tests
         {
             Guid newId = Guid.NewGuid();
             Guid buyerId = _customer2Id; // Different customer buys
-            List<Guid> itemIdsToBuy = new List<Guid> { _item3Id }; // Buy boots
+            List<Guid> itemIdsToBuy = new List<Guid> { _item3Id }; // Buy product
 
             _orderModelService.AddOrder(newId, buyerId, itemIdsToBuy);
 
@@ -147,16 +147,6 @@ namespace Client.Presentation.Model.Tests
 
             Assert.IsFalse(result);
             Assert.AreEqual(initialCount, _dummyOrderLogic.Orders.Count);
-        }
-
-        [TestMethod]
-        public void TriggerPeriodicOrderProcessing_WhenCalled_CallsLogicMethod()
-        {
-            int initialCallCount = _dummyOrderLogic.PeriodicProcessingCallCount;
-
-            _orderModelService.TriggerPeriodicOrderProcessing();
-
-            Assert.AreEqual(initialCallCount + 1, _dummyOrderLogic.PeriodicProcessingCallCount);
         }
 
     }

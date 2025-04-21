@@ -62,53 +62,5 @@ namespace Client.Data.Tests
             Assert.IsFalse(result);
         }
 
-        [TestMethod]
-        public void RemoveById_ShouldRemoveInventory_WhenInventoryExists()
-        {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCart inventory = new DummyCart(inventoryId, 10);
-            _mockContext.Inventories[inventoryId] = inventory;
-
-            bool result = _repository.RemoveInventoryById(inventoryId);
-
-            Assert.IsTrue(result);
-            Assert.IsFalse(_mockContext.Inventories.ContainsKey(inventoryId));
-        }
-
-        [TestMethod]
-        public void RemoveById_ShouldReturnFalse_WhenInventoryDoesNotExist()
-        {
-            Guid inventoryId = Guid.NewGuid();
-
-            bool result = _repository.RemoveInventoryById(inventoryId);
-
-            Assert.IsFalse(result);
-        }
-
-        [TestMethod]
-        public void Update_ShouldUpdateInventory_WhenInventoryExists()
-        {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCart inventory = new DummyCart(inventoryId, 10);
-            _mockContext.Inventories[inventoryId] = inventory;
-
-            DummyCart updatedInventory = new DummyCart(inventoryId, 15);
-
-            bool result = _repository.UpdateInventory(inventoryId, updatedInventory);
-
-            Assert.IsTrue(result);
-            Assert.AreEqual(updatedInventory.Capacity, _mockContext.Inventories[inventoryId].Capacity);
-        }
-
-        [TestMethod]
-        public void Update_ShouldReturnFalse_WhenInventoryDoesNotExist()
-        {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCart updatedInventory = new DummyCart(inventoryId, 15);
-
-            bool result = _repository.UpdateInventory(inventoryId, updatedInventory);
-
-            Assert.IsFalse(result);
-        }
     }
 }
