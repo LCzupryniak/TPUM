@@ -5,27 +5,27 @@ namespace Client.Presentation.Model.Implementation
 {
     internal class CartModelService : ICartModelService
     {
-        private readonly ICartLogic _inventoryLogic;
+        private readonly ICartLogic _cartLogic;
 
-        public CartModelService(ICartLogic inventoryLogic)
+        public CartModelService(ICartLogic cartLogic)
         {
-            _inventoryLogic = inventoryLogic ?? throw new ArgumentNullException(nameof(inventoryLogic));
+            _cartLogic = cartLogic ?? throw new ArgumentNullException(nameof(cartLogic));
         }
 
         public void Add(Guid id, int capacity)
         {
-            _inventoryLogic.Add(new TransientInventoryDTO(id, capacity, new List<IProductDataTransferObject>()));
+            _cartLogic.Add(new TransientCartDTO(id, capacity, new List<IProductDataTransferObject>()));
         }
 
-        public IEnumerable<ICartModel> GetAllInventories()
+        public IEnumerable<ICartModel> GetAllCarts()
         {
-            return _inventoryLogic.GetAll()
+            return _cartLogic.GetAll()
                                  .Select(dto => new CartModel(dto)); // Map DTO to Model
         }
 
-        public ICartModel? GetInventory(Guid id)
+        public ICartModel? GetCart(Guid id)
         {
-            IInventoryDataTransferObject? dto = _inventoryLogic.Get(id);
+            ICartDataTransferObject? dto = _cartLogic.Get(id);
             return dto == null ? null : new CartModel(dto); // Map DTO to Model
         }
     }

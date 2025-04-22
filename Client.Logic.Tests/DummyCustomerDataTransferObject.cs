@@ -7,14 +7,14 @@ namespace Client.Logic.Tests
         public Guid Id { get; }
         public string Name { get; set; }
         public float Money { get; set; }
-        public IInventoryDataTransferObject Inventory { get; set; }
+        public ICartDataTransferObject Cart { get; set; }
 
-        public DummyCustomerDataTransferObject(Guid id, string name, float money, IInventoryDataTransferObject inventory)
+        public DummyCustomerDataTransferObject(Guid id, string name, float money, ICartDataTransferObject cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
     }
 }

@@ -10,12 +10,12 @@ namespace Client.Data.Implementation
     {
         private readonly Dictionary<Guid, ICustomer> _customers = new Dictionary<Guid, ICustomer>();
         private readonly Dictionary<Guid, IProduct> _items = new Dictionary<Guid, IProduct>();
-        private readonly Dictionary<Guid, ICart> _inventories = new Dictionary<Guid, ICart>();
+        private readonly Dictionary<Guid, ICart> _carts = new Dictionary<Guid, ICart>();
         private readonly Dictionary<Guid, IOrder> _orders = new Dictionary<Guid, IOrder>();
 
         public Dictionary<Guid, ICustomer> Customers => _customers;
         public Dictionary<Guid, IProduct> Items => _items;
-        public Dictionary<Guid, ICart> Inventories => _inventories;
+        public Dictionary<Guid, ICart> Carts => _carts;
         public Dictionary<Guid, IOrder> Orders => _orders;
 
         public event Action OnDataChanged = delegate { };
@@ -37,8 +37,8 @@ namespace Client.Data.Implementation
                 case "CUSTOMERS":
                     SyncCustomers(obj.Split('|')[1]);
                     break;
-                case "INVENTORIES":
-                    SyncInventories(obj.Split('|')[1]);
+                case "CARTS":
+                    SyncCarts(obj.Split('|')[1]);
                     break;
                 default:
                     Console.WriteLine("Unknown message type");
@@ -74,27 +74,27 @@ namespace Client.Data.Implementation
                 foreach (var customer in customers)
                 {
                     List<IProduct> items = new List<IProduct>();
-                    foreach (var item in customer.Inventory.Items)
+                    foreach (var item in customer.Cart.Items)
                     {
                         items.Add(new Product(item.Id, item.Name, item.Price, item.MaintenanceCost));
                     }
 
-                    ICart inv = new Cart(customer.Inventory.Id, customer.Inventory.Capacity, items);
+                    ICart inv = new Cart(customer.Cart.Id, customer.Cart.Capacity, items);
                     _customers[customer.Id] = new Customer(customer.Id, customer.Name, customer.Money, inv);
-                    _inventories[inv.Id] = inv;
+                    _carts[inv.Id] = inv;
                 }
             }
         }
 
-        private void SyncInventories(string xml)
+        private void SyncCarts(string xml)
         {
             XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableCart>));
             using (StringReader reader = new StringReader(xml))
             {
-                _inventories.Clear();
+                _carts.Clear();
 
-                List<SerializableCart> inventories = (List<SerializableCart>)serializer.Deserialize(reader)!;
-                foreach (var inv in inventories)
+                List<SerializableCart> carts = (List<SerializableCart>)serializer.Deserialize(reader)!;
+                foreach (var inv in carts)
                 {
                     List<IProduct> items = new List<IProduct>();
                     foreach (var item in inv.Items)
@@ -102,7 +102,7 @@ namespace Client.Data.Implementation
                         items.Add(new Product(item.Id, item.Name, item.Price, item.MaintenanceCost));
                     }
 
-                    _inventories[inv.Id] = new Cart(inv.Id, inv.Capacity, items);
+                    _carts[inv.Id] = new Cart(inv.Id, inv.Capacity, items);
                 }
             }
         }

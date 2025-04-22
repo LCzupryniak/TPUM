@@ -9,12 +9,12 @@ namespace Client.Data.Tests
     {
         private readonly Dictionary<Guid, ICustomer> _customers = new Dictionary<Guid, ICustomer>();
         private readonly Dictionary<Guid, IProduct> _items = new Dictionary<Guid, IProduct>();
-        private readonly Dictionary<Guid, ICart> _inventories = new Dictionary<Guid, ICart>();
+        private readonly Dictionary<Guid, ICart> _carts = new Dictionary<Guid, ICart>();
         private readonly Dictionary<Guid, IOrder> _orders = new Dictionary<Guid, IOrder>();
 
         public Dictionary<Guid, ICustomer> Customers => _customers;
         public Dictionary<Guid, IProduct> Items => _items;
-        public Dictionary<Guid, ICart> Inventories => _inventories;
+        public Dictionary<Guid, ICart> Carts => _carts;
         public Dictionary<Guid, IOrder> Orders => _orders;
 
         public event Action OnDataChanged = delegate { };
@@ -29,7 +29,7 @@ namespace Client.Data.Tests
         {
             _customers.Clear();
             _items.Clear();
-            _inventories.Clear();
+            _carts.Clear();
             _orders.Clear();
         }
     }

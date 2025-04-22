@@ -8,14 +8,14 @@ namespace Client.Logic.Implementation
         public Guid Id { get; } = Guid.Empty;
         public string Name { get; private set; }
         public float Money { get; set; }
-        public ICart Inventory { get; private set; }
+        public ICart Cart { get; private set; }
 
         public MappedDataCustomer(ICustomerDataTransferObject customerData)
         {
             Id = customerData.Id;
             Name = customerData.Name;
             Money = customerData.Money;
-            Inventory = new MappedDataCart(customerData.Inventory);
+            Cart = new MappedDataCart(customerData.Cart);
         }
     }
 }

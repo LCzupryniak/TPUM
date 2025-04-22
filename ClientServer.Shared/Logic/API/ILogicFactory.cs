@@ -6,7 +6,7 @@ namespace ClientServer.Shared.Logic.API
     {
         public abstract static ICustomerLogic CreateCustomerLogic(IDataRepository? dataRepository = default(IDataRepository));
 
-        public abstract static ICartLogic CreateInventoryLogic(IDataRepository? dataRepository = default(IDataRepository));
+        public abstract static ICartLogic CreateCartLogic(IDataRepository? dataRepository = default(IDataRepository));
 
         public abstract static IProductLogic CreateItemLogic(IDataRepository? dataRepository = default(IDataRepository));
 

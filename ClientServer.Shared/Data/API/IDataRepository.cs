@@ -9,12 +9,12 @@
         public abstract bool RemoveCustomer(ICustomer customer);
         public abstract bool UpdateCustomer(Guid id, ICustomer customer);
 
-        public abstract IEnumerable<ICart> GetAllInventories();
-        public abstract ICart? GetInventory(Guid id);
-        public abstract void AddInventory(ICart inventory);
-        public abstract bool RemoveInventoryById(Guid id);
-        public abstract bool RemoveInventory(ICart inventory);
-        public abstract bool UpdateInventory(Guid id, ICart inventory);
+        public abstract IEnumerable<ICart> GetAllCarts();
+        public abstract ICart? GetCart(Guid id);
+        public abstract void AddCart(ICart cart);
+        public abstract bool RemoveCartById(Guid id);
+        public abstract bool RemoveCart(ICart cart);
+        public abstract bool UpdateCart(Guid id, ICart cart);
 
         public abstract IEnumerable<IProduct> GetAllItems();
         public abstract IProduct? GetItem(Guid id);

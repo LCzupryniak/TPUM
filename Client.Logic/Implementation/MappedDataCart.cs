@@ -9,17 +9,17 @@ namespace Client.Logic.Implementation
         public int Capacity { get; }
         public List<IProduct> Items { get; }
 
-        public MappedDataCart(IInventoryDataTransferObject inventoryData)
+        public MappedDataCart(ICartDataTransferObject cartData)
         {
             List<IProduct> mappedItems = new List<IProduct>();
 
-            foreach (IProductDataTransferObject item in inventoryData.Items)
+            foreach (IProductDataTransferObject item in cartData.Items)
             {
                 mappedItems.Add(new MappedDataProduct(item));
             }
 
-            Id = inventoryData.Id;
-            Capacity = inventoryData.Capacity;
+            Id = cartData.Id;
+            Capacity = cartData.Capacity;
             Items = mappedItems;
         }
     }

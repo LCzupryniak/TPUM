@@ -11,8 +11,8 @@ namespace Client.Presentation.Model.Tests
         public int MaintenanceCost { get; set; }
     }
 
-    // Dummy Inventory Model
-    internal class DummyInventoryModel : ICartModel
+    // Dummy Cart Model
+    internal class DummyCartModel : ICartModel
     {
         public Guid Id { get; set; }
         public int Capacity { get; set; }
@@ -25,7 +25,7 @@ namespace Client.Presentation.Model.Tests
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
         public float Money { get; set; }
-        public ICartModel Inventory { get; set; } = default!;
+        public ICartModel Cart { get; set; } = default!;
     }
 
     // Dummy Order Model

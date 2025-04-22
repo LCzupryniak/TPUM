@@ -2,7 +2,7 @@
 
 namespace Client.Logic.Tests
 {
-    internal class DummyCartDataTransferObject : IInventoryDataTransferObject
+    internal class DummyCartDataTransferObject : ICartDataTransferObject
     {
         public Guid Id { get; }
         public int Capacity { get; }

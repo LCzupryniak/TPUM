@@ -7,7 +7,7 @@ namespace Client.Presentation.Model.Tests
     public class CustomerModelServiceTests
     {
         private DummyCustomerLogic _dummyCustomerLogic = null!;
-        private DummyInventoryLogic _dummyInventoryLogic = null!;
+        private DummyCartLogic _dummyCartLogic = null!;
         private DummyItemLogic _dummyItemLogic = null!;
 
         private ICustomerModelService _customerModelService = null!;
@@ -18,8 +18,8 @@ namespace Client.Presentation.Model.Tests
 
         private DummyCustomerDto _customerDto1 = null!;
         private DummyCustomerDto _customerDto2 = null!;
-        private DummyInventoryDto _invDto1 = null!;
-        private DummyInventoryDto _invDto2 = null!;
+        private DummyCartDto _invDto1 = null!;
+        private DummyCartDto _invDto2 = null!;
         private DummyItemDto _itemDto1 = null!;
         private DummyItemDto _itemDto2 = null!;
 
@@ -28,7 +28,7 @@ namespace Client.Presentation.Model.Tests
         public void TestInitialize()
         {
             _dummyCustomerLogic = new DummyCustomerLogic();
-            _dummyInventoryLogic = new DummyInventoryLogic();
+            _dummyCartLogic = new DummyCartLogic();
             _dummyItemLogic = new DummyItemLogic();
 
             // Create Test DTOs
@@ -42,21 +42,21 @@ namespace Client.Presentation.Model.Tests
 
             _inv1Id = Guid.NewGuid();
             _inv2Id = Guid.NewGuid();
-            _invDto1 = new DummyInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IProductDataTransferObject> { _itemDto1 } };
-            _invDto2 = new DummyInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IProductDataTransferObject>() }; // Empty inventory
-            _dummyInventoryLogic.Inventories.Add(_invDto1.Id, _invDto1);
-            _dummyInventoryLogic.Inventories.Add(_invDto2.Id, _invDto2);
+            _invDto1 = new DummyCartDto { Id = _inv1Id, Capacity = 10, Items = new List<IProductDataTransferObject> { _itemDto1 } };
+            _invDto2 = new DummyCartDto { Id = _inv2Id, Capacity = 5, Items = new List<IProductDataTransferObject>() }; // Empty cart
+            _dummyCartLogic.Carts.Add(_invDto1.Id, _invDto1);
+            _dummyCartLogic.Carts.Add(_invDto2.Id, _invDto2);
 
 
             _customer1Id = Guid.NewGuid();
             _customer2Id = Guid.NewGuid();
-            _customerDto1 = new DummyCustomerDto { Id = _customer1Id, Name = "Barbara", Money = 500f, Inventory = _invDto1 };
-            _customerDto2 = new DummyCustomerDto { Id = _customer2Id, Name = "Klemens", Money = 300f, Inventory = _invDto2 };
+            _customerDto1 = new DummyCustomerDto { Id = _customer1Id, Name = "Barbara", Money = 500f, Cart = _invDto1 };
+            _customerDto2 = new DummyCustomerDto { Id = _customer2Id, Name = "Klemens", Money = 300f, Cart = _invDto2 };
             _dummyCustomerLogic.Customers.Add(_customerDto1.Id, _customerDto1);
             _dummyCustomerLogic.Customers.Add(_customerDto2.Id, _customerDto2);
 
 
-            _customerModelService = ModelFactory.CreateCustomerModelService(_dummyCustomerLogic, _dummyInventoryLogic);
+            _customerModelService = ModelFactory.CreateCustomerModelService(_dummyCustomerLogic, _dummyCartLogic);
         }
 
         [TestMethod]
@@ -67,16 +67,16 @@ namespace Client.Presentation.Model.Tests
             Assert.IsNotNull(customers);
             Assert.AreEqual(2, customers.Count);
 
-            ICustomerModel? BobModel = customers.FirstOrDefault(h => h.Id == _customer1Id);
-            Assert.IsNotNull(BobModel);
-            Assert.AreEqual("Barbara", BobModel.Name);
-            Assert.AreEqual(500f, BobModel.Money);
-            Assert.IsNotNull(BobModel.Inventory);
-            Assert.AreEqual(_inv1Id, BobModel.Inventory.Id);
-            Assert.AreEqual(10, BobModel.Inventory.Capacity);
-            Assert.AreEqual(1, BobModel.Inventory.Items.Count());
-            Assert.AreEqual(_item1Id, BobModel.Inventory.Items.First().Id);
-            Assert.AreEqual("TV", BobModel.Inventory.Items.First().Name);
+            ICustomerModel? BarbaraModel = customers.FirstOrDefault(h => h.Id == _customer1Id);
+            Assert.IsNotNull(BarbaraModel);
+            Assert.AreEqual("Barbara", BarbaraModel.Name);
+            Assert.AreEqual(500f, BarbaraModel.Money);
+            Assert.IsNotNull(BarbaraModel.Cart);
+            Assert.AreEqual(_inv1Id, BarbaraModel.Cart.Id);
+            Assert.AreEqual(10, BarbaraModel.Cart.Capacity);
+            Assert.AreEqual(1, BarbaraModel.Cart.Items.Count());
+            Assert.AreEqual(_item1Id, BarbaraModel.Cart.Items.First().Id);
+            Assert.AreEqual("TV", BarbaraModel.Cart.Items.First().Name);
         }
 
         [TestMethod]
@@ -88,9 +88,9 @@ namespace Client.Presentation.Model.Tests
             Assert.AreEqual(_customer1Id, customer.Id);
             Assert.AreEqual("Barbara", customer.Name);
             Assert.AreEqual(500f, customer.Money);
-            Assert.IsNotNull(customer.Inventory);
-            Assert.AreEqual(_inv1Id, customer.Inventory.Id);
-            Assert.AreEqual(1, customer.Inventory.Items.Count());
+            Assert.IsNotNull(customer.Cart);
+            Assert.AreEqual(_inv1Id, customer.Cart.Id);
+            Assert.AreEqual(1, customer.Cart.Items.Count());
         }
 
         [TestMethod]

@@ -57,7 +57,7 @@
                 <ColumnDefinition Width="Auto" MinWidth="7" />
                 <!--  Splitter  -->
                 <ColumnDefinition Width="444*" />
-                <!--  Inventory & Orders  -->
+                <!--  Cart & Orders  -->
             </Grid.ColumnDefinitions>
 
             <!--  Shop  -->
@@ -85,7 +85,7 @@
                                 <GridViewColumn
                                     Width="150"
                                     DisplayMemberBinding="{Binding Name}"
-                                    Header="Item Name" />
+                                    Header="Product Name" />
                                 <GridViewColumn
                                     Width="80"
                                     DisplayMemberBinding="{Binding Price}"
@@ -126,7 +126,7 @@
             <Grid Grid.Column="2" Margin="5,0,0,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="283*" />
-                    <!--  Inventory  -->
+                    <!--  Cart  -->
                     <RowDefinition Height="249*" />
                     <!--  Orders  -->
                 </Grid.RowDefinitions>
@@ -137,13 +137,13 @@
                     Margin="0,0,0,10"
                     Padding="5"
                     Header="Selected Customer's Cart" Grid.RowSpan="2">
-                    <ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding SelectedCustomerInventory}" Height="487">
+                    <ListView HorizontalContentAlignment="Stretch" ItemsSource="{Binding SelectedCustomerCart}" Height="487">
                         <ListView.View>
                             <GridView>
                                 <GridViewColumn
                                     Width="150"
                                     DisplayMemberBinding="{Binding Name}"
-                                    Header="Item Name" />
+                                    Header="Product Name" />
                                 <GridViewColumn
                                     Width="100"
                                     DisplayMemberBinding="{Binding MaintenanceCost}"

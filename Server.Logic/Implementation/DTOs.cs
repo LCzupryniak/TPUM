@@ -7,24 +7,24 @@ namespace Server.Logic.Implementation
         public Guid Id { get; }
         public string Name { get; set; }
         public float Money { get; set; }
-        public IInventoryDataTransferObject Inventory { get; set; }
+        public ICartDataTransferObject Cart { get; set; }
 
-        public CustomerDataTransferObject(Guid id, string name, float money, IInventoryDataTransferObject inventory)
+        public CustomerDataTransferObject(Guid id, string name, float money, ICartDataTransferObject cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
     }
 
-    internal class InventoryDataTransferObject : IInventoryDataTransferObject
+    internal class CartDataTransferObject : ICartDataTransferObject
     {
         public Guid Id { get; }
         public int Capacity { get; }
         public IEnumerable<IProductDataTransferObject> Items { get; }
 
-        public InventoryDataTransferObject(Guid id, int capacity, IEnumerable<IProductDataTransferObject> items)
+        public CartDataTransferObject(Guid id, int capacity, IEnumerable<IProductDataTransferObject> items)
         {
             Id = id;
             Capacity = capacity;

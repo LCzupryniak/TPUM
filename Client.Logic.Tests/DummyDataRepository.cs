@@ -6,11 +6,11 @@ namespace Client.Logic.Tests
     {
         private readonly Dictionary<Guid, ICustomer> _customers = new Dictionary<Guid, ICustomer>();
         private readonly Dictionary<Guid, IProduct> _items = new Dictionary<Guid, IProduct>();
-        private readonly Dictionary<Guid, ICart> _inventories = new Dictionary<Guid, ICart>();
+        private readonly Dictionary<Guid, ICart> _carts = new Dictionary<Guid, ICart>();
         private readonly Dictionary<Guid, IOrder> _orders = new Dictionary<Guid, IOrder>();
 
         private readonly object _customersLock = new object();
-        private readonly object _inventoryLock = new object();
+        private readonly object _cartLock = new object();
         private readonly object _itemsLock = new object();
         private readonly object _ordersLock = new object();
 
@@ -87,42 +87,42 @@ namespace Client.Logic.Tests
             }
         }
 
-        public IEnumerable<ICart> GetAllInventories()
+        public IEnumerable<ICart> GetAllCarts()
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                return _inventories.Values.ToList();
+                return _carts.Values.ToList();
             }
         }
 
-        public ICart? GetInventory(Guid id)
+        public ICart? GetCart(Guid id)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_inventories.ContainsKey(id))
+                if (_carts.ContainsKey(id))
                 {
-                    return _inventories[id];
+                    return _carts[id];
                 }
 
                 return null;
             }
         }
 
-        public void AddInventory(ICart inventory)
+        public void AddCart(ICart cart)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                _inventories[inventory.Id] = inventory;
+                _carts[cart.Id] = cart;
             }
         }
 
-        public bool RemoveInventoryById(Guid id)
+        public bool RemoveCartById(Guid id)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_inventories.ContainsKey(id))
+                if (_carts.ContainsKey(id))
                 {
-                    _inventories.Remove(id);
+                    _carts.Remove(id);
                     return true;
                 }
 
@@ -130,13 +130,13 @@ namespace Client.Logic.Tests
             }
         }
 
-        public bool RemoveInventory(ICart inventory)
+        public bool RemoveCart(ICart cart)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_inventories.ContainsKey(inventory.Id))
+                if (_carts.ContainsKey(cart.Id))
                 {
-                    _inventories.Remove(inventory.Id);
+                    _carts.Remove(cart.Id);
                     return true;
                 }
 
@@ -144,13 +144,13 @@ namespace Client.Logic.Tests
             }
         }
 
-        public bool UpdateInventory(Guid id, ICart inventory)
+        public bool UpdateCart(Guid id, ICart cart)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_inventories.ContainsKey(id))
+                if (_carts.ContainsKey(id))
                 {
-                    _inventories[id] = inventory;
+                    _carts[id] = cart;
                     return true;
                 }
 

@@ -12,18 +12,18 @@ namespace Client.Logic.Tests
         [TestInitialize]
         public void SetUp()
         {
-            _logic = LogicFactory.CreateInventoryLogic(new DummyDataRepository());
+            _logic = LogicFactory.CreateCartLogic(new DummyDataRepository());
         }
 
         private class TestItem : IProduct
         {
             public Guid Id { get; set; } = Guid.NewGuid();
-            public string Name { get; set; } = "ItemInInventory";
+            public string Name { get; set; } = "ItemInCart";
             public int Price { get; set; } = 5;
             public int MaintenanceCost { get; set; } = 0;
         }
 
-        private class TestInventory : ICart
+        private class TestCart : ICart
         {
             public Guid Id { get; set; } = Guid.NewGuid();
             public int Capacity { get; set; } = 10;
@@ -31,60 +31,60 @@ namespace Client.Logic.Tests
         }
 
         [TestMethod]
-        public void Add_ShouldAddInventoryToRepository()
+        public void Add_ShouldAddCartToRepository()
         {
-            DummyCartDataTransferObject inventory = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
-            _logic.Add(inventory);
-            IInventoryDataTransferObject? retrieved = _logic.Get(inventory.Id);
+            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
+            _logic.Add(cart);
+            ICartDataTransferObject? retrieved = _logic.Get(cart.Id);
             Assert.IsNotNull(retrieved);
-            Assert.AreEqual(inventory.Capacity, retrieved.Capacity);
+            Assert.AreEqual(cart.Capacity, retrieved.Capacity);
         }
 
         [TestMethod]
-        public void Get_ShouldReturnInventory_WhenExists()
+        public void Get_ShouldReturnCart_WhenExists()
         {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCartDataTransferObject inventory = new DummyCartDataTransferObject(inventoryId, 10, new List<IProductDataTransferObject>());
-            _logic.Add(inventory);
-            IInventoryDataTransferObject? retrieved = _logic.Get(inventoryId);
+            Guid cartId = Guid.NewGuid();
+            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(cartId, 10, new List<IProductDataTransferObject>());
+            _logic.Add(cart);
+            ICartDataTransferObject? retrieved = _logic.Get(cartId);
             Assert.IsNotNull(retrieved);
-            Assert.AreEqual(inventory.Capacity, retrieved.Capacity);
+            Assert.AreEqual(cart.Capacity, retrieved.Capacity);
         }
 
         [TestMethod]
-        public void RemoveById_ShouldRemoveInventory_WhenExists()
+        public void RemoveById_ShouldRemoveCart_WhenExists()
         {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCartDataTransferObject inventory = new DummyCartDataTransferObject(inventoryId, 10, new List<IProductDataTransferObject>());
-            _logic.Add(inventory);
-            bool removed = _logic.RemoveById(inventoryId);
+            Guid cartId = Guid.NewGuid();
+            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(cartId, 10, new List<IProductDataTransferObject>());
+            _logic.Add(cart);
+            bool removed = _logic.RemoveById(cartId);
             Assert.IsTrue(removed);
-            Assert.IsNull(_logic.Get(inventoryId));
+            Assert.IsNull(_logic.Get(cartId));
         }
 
         [TestMethod]
-        public void RemoveById_ShouldReturnFalse_WhenInventoryDoesNotExist()
+        public void RemoveById_ShouldReturnFalse_WhenCartDoesNotExist()
         {
-            Guid inventoryId = Guid.NewGuid();
-            bool removed = _logic.RemoveById(inventoryId);
+            Guid cartId = Guid.NewGuid();
+            bool removed = _logic.RemoveById(cartId);
             Assert.IsFalse(removed);
         }
 
         [TestMethod]
-        public void Remove_ShouldRemoveInventory_WhenExists()
+        public void Remove_ShouldRemoveCart_WhenExists()
         {
-            DummyCartDataTransferObject inventory = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
-            _logic.Add(inventory);
-            bool removed = _logic.Remove(inventory);
+            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
+            _logic.Add(cart);
+            bool removed = _logic.Remove(cart);
             Assert.IsTrue(removed);
-            Assert.IsNull(_logic.Get(inventory.Id));
+            Assert.IsNull(_logic.Get(cart.Id));
         }
 
         [TestMethod]
-        public void Update_ShouldReturnFalse_WhenInventoryDoesNotExist()
+        public void Update_ShouldReturnFalse_WhenCartDoesNotExist()
         {
-            DummyCartDataTransferObject inventory = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
-            bool updated = _logic.Update(inventory.Id, inventory);
+            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
+            bool updated = _logic.Update(cart.Id, cart);
             Assert.IsFalse(updated);
         }
     }

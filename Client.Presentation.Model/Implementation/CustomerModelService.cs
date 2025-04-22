@@ -6,12 +6,12 @@ namespace Client.Presentation.Model.Implementation
     internal class CustomerModelService : ICustomerModelService
     {
         private readonly ICustomerLogic _customerLogic;
-        private readonly ICartLogic _inventoryLogic;
+        private readonly ICartLogic _cartLogic;
 
-        public CustomerModelService(ICustomerLogic customerLogic, ICartLogic inventoryLogic)
+        public CustomerModelService(ICustomerLogic customerLogic, ICartLogic cartLogic)
         {
             _customerLogic = customerLogic ?? throw new ArgumentNullException(nameof(customerLogic));
-            _inventoryLogic = inventoryLogic ?? throw new ArgumentNullException(nameof(inventoryLogic));
+            _cartLogic = cartLogic ?? throw new ArgumentNullException(nameof(cartLogic));
         }
 
         public IEnumerable<ICustomerModel> GetAllCustomers()
@@ -26,10 +26,10 @@ namespace Client.Presentation.Model.Implementation
             return dto == null ? null : new CustomerModel(dto); // Map DTO to Model
         }
 
-        public void AddCustomer(Guid id, string name, float money, Guid inventoryId)
+        public void AddCustomer(Guid id, string name, float money, Guid cartId)
         {
-            IInventoryDataTransferObject inventoryDto = _inventoryLogic.Get(inventoryId)!;
-            TransientCustomerDTO? transientDto = new TransientCustomerDTO(id, name, money, inventoryDto);
+            ICartDataTransferObject cartDto = _cartLogic.Get(cartId)!;
+            TransientCustomerDTO? transientDto = new TransientCustomerDTO(id, name, money, cartDto);
             _customerLogic.Add(transientDto);
         }
 
@@ -39,11 +39,11 @@ namespace Client.Presentation.Model.Implementation
             return _customerLogic.RemoveById(id);
         }
 
-        public bool UpdateCustomer(Guid id, string name, float money, Guid inventoryId)
+        public bool UpdateCustomer(Guid id, string name, float money, Guid cartId)
         {
-            IInventoryDataTransferObject inventoryDto = _inventoryLogic.Get(inventoryId)!;
+            ICartDataTransferObject cartDto = _cartLogic.Get(cartId)!;
 
-            TransientCustomerDTO? transientDto = new TransientCustomerDTO(id, name, money, inventoryDto);
+            TransientCustomerDTO? transientDto = new TransientCustomerDTO(id, name, money, cartDto);
             return _customerLogic.Update(id, transientDto);
         }
 

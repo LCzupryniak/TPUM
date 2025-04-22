@@ -7,7 +7,7 @@ namespace Server.Data.Implementation
         private readonly IDataContext _context;
 
         private readonly object _customersLock = new object();
-        private readonly object _inventoryLock = new object();
+        private readonly object _cartLock = new object();
         private readonly object _itemsLock = new object();
         private readonly object _ordersLock = new object();
 
@@ -89,42 +89,42 @@ namespace Server.Data.Implementation
             }
         }
 
-        public IEnumerable<ICart> GetAllInventories()
+        public IEnumerable<ICart> GetAllCarts()
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                return _context.Inventories.Values.ToList();
+                return _context.Carts.Values.ToList();
             }
         }
 
-        public ICart? GetInventory(Guid id)
+        public ICart? GetCart(Guid id)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_context.Inventories.ContainsKey(id))
+                if (_context.Carts.ContainsKey(id))
                 {
-                    return _context.Inventories[id];
+                    return _context.Carts[id];
                 }
 
                 return null;
             }
         }
 
-        public void AddInventory(ICart inventory)
+        public void AddCart(ICart cart)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                _context.Inventories[inventory.Id] = inventory;
+                _context.Carts[cart.Id] = cart;
             }
         }
 
-        public bool RemoveInventoryById(Guid id)
+        public bool RemoveCartById(Guid id)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_context.Inventories.ContainsKey(id))
+                if (_context.Carts.ContainsKey(id))
                 {
-                    _context.Inventories.Remove(id);
+                    _context.Carts.Remove(id);
                     return true;
                 }
 
@@ -132,13 +132,13 @@ namespace Server.Data.Implementation
             }
         }
 
-        public bool RemoveInventory(ICart inventory)
+        public bool RemoveCart(ICart cart)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_context.Inventories.ContainsKey(inventory.Id))
+                if (_context.Carts.ContainsKey(cart.Id))
                 {
-                    _context.Inventories.Remove(inventory.Id);
+                    _context.Carts.Remove(cart.Id);
                     return true;
                 }
 
@@ -146,13 +146,13 @@ namespace Server.Data.Implementation
             }
         }
 
-        public bool UpdateInventory(Guid id, ICart inventory)
+        public bool UpdateCart(Guid id, ICart cart)
         {
-            lock (_inventoryLock)
+            lock (_cartLock)
             {
-                if (_context.Inventories.ContainsKey(id))
+                if (_context.Carts.ContainsKey(id))
                 {
-                    _context.Inventories[id] = inventory;
+                    _context.Carts[id] = cart;
                     return true;
                 }
 

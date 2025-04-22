@@ -10,7 +10,7 @@ namespace Client.Presentation.Model.Tests
         private DummyOrderLogic _dummyOrderLogic = null!;
         private DummyCustomerLogic _dummyCustomerLogic = null!;
         private DummyItemLogic _dummyItemLogic = null!;
-        private DummyInventoryLogic _dummyInventoryLogic = null!;
+        private DummyCartLogic _dummyCartLogic = null!;
 
         private IOrderModelService _orderModelService = null!;
 
@@ -22,8 +22,8 @@ namespace Client.Presentation.Model.Tests
         private DummyOrderDto _orderDto1 = null!;
         private DummyCustomerDto _customerDto1 = null!;
         private DummyCustomerDto _customerDto2 = null!;
-        private DummyInventoryDto _invDto1 = null!;
-        private DummyInventoryDto _invDto2 = null!;
+        private DummyCartDto _invDto1 = null!;
+        private DummyCartDto _invDto2 = null!;
         private DummyItemDto _itemDto1 = null!;
         private DummyItemDto _itemDto2 = null!;
         private DummyItemDto _itemDto3 = null!; // Item not in order
@@ -34,7 +34,7 @@ namespace Client.Presentation.Model.Tests
             _dummyOrderLogic = new DummyOrderLogic();
             _dummyCustomerLogic = new DummyCustomerLogic();
             _dummyItemLogic = new DummyItemLogic();
-            _dummyInventoryLogic = new DummyInventoryLogic();
+            _dummyCartLogic = new DummyCartLogic();
 
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
@@ -49,15 +49,15 @@ namespace Client.Presentation.Model.Tests
 
             _inv1Id = Guid.NewGuid();
             _inv2Id = Guid.NewGuid();
-            _invDto1 = new DummyInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IProductDataTransferObject>() };
-            _invDto2 = new DummyInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IProductDataTransferObject>() };
-            _dummyInventoryLogic.Inventories.Add(_invDto1.Id, _invDto1);
-            _dummyInventoryLogic.Inventories.Add(_invDto2.Id, _invDto2);
+            _invDto1 = new DummyCartDto { Id = _inv1Id, Capacity = 10, Items = new List<IProductDataTransferObject>() };
+            _invDto2 = new DummyCartDto { Id = _inv2Id, Capacity = 5, Items = new List<IProductDataTransferObject>() };
+            _dummyCartLogic.Carts.Add(_invDto1.Id, _invDto1);
+            _dummyCartLogic.Carts.Add(_invDto2.Id, _invDto2);
 
             _customer1Id = Guid.NewGuid();
             _customer2Id = Guid.NewGuid();
-            _customerDto1 = new DummyCustomerDto { Id = _customer1Id, Name = "BuyerCustomer", Money = 1000f, Inventory = _invDto1 };
-            _customerDto2 = new DummyCustomerDto { Id = _customer2Id, Name = "OtherCustomer", Money = 500f, Inventory = _invDto2 };
+            _customerDto1 = new DummyCustomerDto { Id = _customer1Id, Name = "BuyerCustomer", Money = 1000f, Cart = _invDto1 };
+            _customerDto2 = new DummyCustomerDto { Id = _customer2Id, Name = "OtherCustomer", Money = 500f, Cart = _invDto2 };
             _dummyCustomerLogic.Customers.Add(_customerDto1.Id, _customerDto1);
             _dummyCustomerLogic.Customers.Add(_customerDto2.Id, _customerDto2);
 

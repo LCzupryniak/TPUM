@@ -9,7 +9,7 @@ namespace Server.Presentation
     internal static class Server
     {
         private static ICustomerLogic _customerLogic = LogicFactory.CreateCustomerLogic();
-        private static ICartLogic _inventoryLogic = LogicFactory.CreateInventoryLogic();
+        private static ICartLogic _cartLogic = LogicFactory.CreateCartLogic();
         private static IProductLogic _itemLogic = LogicFactory.CreateItemLogic();
         private static IOrderLogic _orderLogic = LogicFactory.CreateOrderLogic();
 
@@ -71,10 +71,10 @@ namespace Server.Presentation
             Console.WriteLine("[SERVER]: Sync items");
         }
 
-        private async static Task SyncInventories()
+        private async static Task SyncCarts()
         {
-            IEnumerable<IInventoryDataTransferObject> inves = _inventoryLogic.GetAll();
-            List<SerializableCart> inventoriesToSerialize = inves.Select(inv =>
+            IEnumerable<ICartDataTransferObject> inves = _cartLogic.GetAll();
+            List<SerializableCart> cartsToSerialize = inves.Select(inv =>
                 new SerializableCart(inv.Id, inv.Capacity,
                     inv.Items.Select(item => new SerializableProduct(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
                 ).ToList();
@@ -83,14 +83,14 @@ namespace Server.Presentation
             string xml;
             using (StringWriter writer = new StringWriter())
             {
-                serializer.Serialize(writer, inventoriesToSerialize);
+                serializer.Serialize(writer, cartsToSerialize);
                 xml = writer.ToString();
             }
 
             // Send the xml to the client
-            await CurrentConnection.SendAsync("INVENTORIES|" + xml);
+            await CurrentConnection.SendAsync("CARTS|" + xml);
 
-            Console.WriteLine("[SERVER]: Sync inventories");
+            Console.WriteLine("[SERVER]: Sync carts");
         }
 
         private async static Task SyncCustomers()
@@ -98,8 +98,8 @@ namespace Server.Presentation
             IEnumerable<ICustomerDataTransferObject> customers = _customerLogic.GetAll();
             List<SerializableCustomer> customersToSerialize = customers.Select(customer =>
                 new SerializableCustomer(customer.Id, customer.Name, customer.Money,
-                    new SerializableCart(customer.Inventory.Id, customer.Inventory.Capacity,
-                    customer.Inventory.Items.Select(item => new SerializableProduct(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
+                    new SerializableCart(customer.Cart.Id, customer.Cart.Capacity,
+                    customer.Cart.Items.Select(item => new SerializableProduct(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
                 )).ToList();
 
             XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableCustomer>));
@@ -167,8 +167,8 @@ namespace Server.Presentation
                 await SyncItems();
             else if (message.Contains("GET /customers"))
                 await SyncCustomers();
-            else if (message.Contains("GET /inventories"))
-                await SyncInventories();
+            else if (message.Contains("GET /carts"))
+                await SyncCarts();
             else if (message.Contains("POST /orders"))
                 await CreateOrder(message);
         }
@@ -201,14 +201,14 @@ namespace Server.Presentation
         }
     }
 
-    // Inventory DTO
-    internal class TransientInventoryDTO : IInventoryDataTransferObject
+    // Cart DTO
+    internal class TransientCartDTO : ICartDataTransferObject
     {
         public Guid Id { get; }
         public int Capacity { get; }
         public IEnumerable<IProductDataTransferObject> Items { get; }
 
-        public TransientInventoryDTO(Guid id, int capacity, IEnumerable<IProductDataTransferObject> items)
+        public TransientCartDTO(Guid id, int capacity, IEnumerable<IProductDataTransferObject> items)
         {
             Id = id;
             Capacity = capacity;
@@ -222,14 +222,14 @@ namespace Server.Presentation
         public Guid Id { get; }
         public string Name { get; set; }
         public float Money { get; set; }
-        public IInventoryDataTransferObject Inventory { get; set; }
+        public ICartDataTransferObject Cart { get; set; }
 
-        public TransientCustomerDTO(Guid id, string name, float money, IInventoryDataTransferObject inventory)
+        public TransientCustomerDTO(Guid id, string name, float money, ICartDataTransferObject cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
     }
 

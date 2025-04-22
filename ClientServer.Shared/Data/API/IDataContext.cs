@@ -6,7 +6,7 @@
 
         public abstract Dictionary<Guid, IProduct> Items { get; }
 
-        public abstract Dictionary<Guid, ICart> Inventories { get; }
+        public abstract Dictionary<Guid, ICart> Carts { get; }
 
         public abstract Dictionary<Guid, IOrder> Orders { get; }
 

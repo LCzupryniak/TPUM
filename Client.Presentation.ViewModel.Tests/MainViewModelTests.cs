@@ -5,7 +5,7 @@ namespace Client.Presentation.ViewModel.Tests
     [TestClass]
     public sealed class MainViewModelTests
     {
-        private ICartModelService _inventoryModelService = null!;
+        private ICartModelService _cartModelService = null!;
         private ICustomerModelService _customerModelService = null!;
         private IProductModelService _itemModelService = null!;
         private IOrderModelService _orderModelService = null!;
@@ -13,8 +13,8 @@ namespace Client.Presentation.ViewModel.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            _inventoryModelService = new DummyInventoryModelService();
-            _customerModelService = new DummyCustomerModelService(_inventoryModelService);
+            _cartModelService = new DummyCartModelService();
+            _customerModelService = new DummyCustomerModelService(_cartModelService);
             _itemModelService = new DummyItemModelService();
             _orderModelService = new DummyOrderModelService(_customerModelService, _itemModelService);
         }
@@ -27,7 +27,7 @@ namespace Client.Presentation.ViewModel.Tests
             Assert.IsNotNull(vm);
             Assert.IsFalse(vm.Customers.Any());
             Assert.IsFalse(vm.ShopItems.Any());
-            Assert.IsFalse(vm.SelectedCustomerInventory.Any());
+            Assert.IsFalse(vm.SelectedCustomerCart.Any());
             Assert.IsFalse(vm.Orders.Any());
 
             Assert.IsNull(vm.SelectedCustomer);
@@ -45,7 +45,7 @@ namespace Client.Presentation.ViewModel.Tests
 
             Guid invGuid = Guid.NewGuid();
 
-            _inventoryModelService.Add(invGuid, 25);
+            _cartModelService.Add(invGuid, 25);
 
             Guid customerGuid = Guid.NewGuid();
 

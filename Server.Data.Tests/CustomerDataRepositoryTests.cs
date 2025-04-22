@@ -10,8 +10,8 @@ namespace Server.Data.Tests
         [TestMethod]
         public void Add_ShouldAddCustomerToRepository()
         {
-            DummyCart inventory = new DummyCart(10);
-            DummyCustomer customer = new DummyCustomer("Customer1", 1000, inventory);
+            DummyCart cart = new DummyCart(10);
+            DummyCustomer customer = new DummyCustomer("Customer1", 1000, cart);
 
             _repository.AddCustomer(customer);
 
@@ -23,8 +23,8 @@ namespace Server.Data.Tests
         public void Get_ShouldReturnCustomer_WhenCustomerExists()
         {
             Guid customerId = Guid.NewGuid();
-            DummyCart inventory = new DummyCart(10);
-            DummyCustomer customer = new DummyCustomer(customerId, "Customer1", 1000, inventory);
+            DummyCart cart = new DummyCart(10);
+            DummyCustomer customer = new DummyCustomer(customerId, "Customer1", 1000, cart);
 
             _mockContext.Customers[customerId] = customer;
 
@@ -48,8 +48,8 @@ namespace Server.Data.Tests
         public void Remove_ShouldRemoveCustomer_WhenCustomerExists()
         {
             Guid customerId = Guid.NewGuid();
-            DummyCart inventory = new DummyCart(10);
-            DummyCustomer customer = new DummyCustomer(customerId, "Customer1", 1000, inventory);
+            DummyCart cart = new DummyCart(10);
+            DummyCustomer customer = new DummyCustomer(customerId, "Customer1", 1000, cart);
             _mockContext.Customers[customerId] = customer;
 
             bool result = _repository.RemoveCustomer(customer);

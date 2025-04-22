@@ -8,34 +8,34 @@ namespace Server.Logic.Implementation
         public Guid Id { get; } = Guid.Empty;
         public string Name { get; private set; }
         public float Money { get; set; }
-        public ICart Inventory { get; private set; }
+        public ICart Cart { get; private set; }
 
         public MappedDataCustomer(ICustomerDataTransferObject customerData)
         {
             Id = customerData.Id;
             Name = customerData.Name;
             Money = customerData.Money;
-            Inventory = new MappedDataInventory(customerData.Inventory);
+            Cart = new MappedDataCart(customerData.Cart);
         }
     }
 
-    internal class MappedDataInventory : ICart
+    internal class MappedDataCart : ICart
     {
         public Guid Id { get; } = Guid.Empty;
         public int Capacity { get; }
         public List<IProduct> Items { get; }
 
-        public MappedDataInventory(IInventoryDataTransferObject inventoryData)
+        public MappedDataCart(ICartDataTransferObject cartData)
         {
             List<IProduct> mappedItems = new List<IProduct>();
 
-            foreach (IProductDataTransferObject item in inventoryData.Items)
+            foreach (IProductDataTransferObject item in cartData.Items)
             {
                 mappedItems.Add(new MappedDataItem(item));
             }
 
-            Id = inventoryData.Id;
-            Capacity = inventoryData.Capacity;
+            Id = cartData.Id;
+            Capacity = cartData.Capacity;
             Items = mappedItems;
         }
     }

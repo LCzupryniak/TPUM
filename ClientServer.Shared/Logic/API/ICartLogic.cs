@@ -2,16 +2,16 @@
 {
     public interface ICartLogic
     {
-        public abstract IEnumerable<IInventoryDataTransferObject> GetAll();
+        public abstract IEnumerable<ICartDataTransferObject> GetAll();
 
-        public abstract IInventoryDataTransferObject? Get(Guid id);
+        public abstract ICartDataTransferObject? Get(Guid id);
 
-        public abstract void Add(IInventoryDataTransferObject item);
+        public abstract void Add(ICartDataTransferObject item);
 
         public abstract bool RemoveById(Guid id);
 
-        public abstract bool Remove(IInventoryDataTransferObject item);
+        public abstract bool Remove(ICartDataTransferObject item);
 
-        public abstract bool Update(Guid id, IInventoryDataTransferObject item);
+        public abstract bool Update(Guid id, ICartDataTransferObject item);
     }
 }

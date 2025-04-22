@@ -14,7 +14,7 @@ namespace Client.Logic.API
             return new CustomerLogic(dataRepository ?? _repository);
         }
 
-        public static ICartLogic CreateInventoryLogic(IDataRepository? dataRepository = default(IDataRepository))
+        public static ICartLogic CreateCartLogic(IDataRepository? dataRepository = default(IDataRepository))
         {
             return new CartLogic(dataRepository ?? _repository);
         }

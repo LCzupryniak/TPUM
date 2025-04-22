@@ -51,13 +51,13 @@ namespace Client.Logic.Tests
     //    }
 
     //    [TestMethod]
-    //    public async Task FetchInventories_NoConnection_ShouldLogNoConnection()
+    //    public async Task FetchCarts_NoConnection_ShouldLogNoConnection()
     //    {
     //        if (WebSocketClient.CurrentConnection != null)
     //        {
     //            await WebSocketClient.Disconnect();
     //        }
-    //        await _connectionService.FetchInventories();
+    //        await _connectionService.FetchCarts();
     //        Assert.IsTrue(_logMessages.Any(m => m.Contains("No connection to server.")));
     //    }
 
@@ -88,5 +88,5 @@ namespace Client.Logic.Tests
     //            Console.WriteLine($"Cleanup error: {ex.Message}");
     //        }
     //    }
-    // }
+    //}
 }

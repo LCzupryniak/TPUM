@@ -8,7 +8,7 @@ namespace Client.Presentation.Model.Implementation
         public Guid Id { get; }
         public string Name { get; }
         public float Money { get; }
-        public ICartModel Inventory { get; }
+        public ICartModel Cart { get; }
 
         // DTO
         public CustomerModel(ICustomerDataTransferObject dto)
@@ -16,16 +16,16 @@ namespace Client.Presentation.Model.Implementation
             Id = dto.Id;
             Name = dto.Name;
             Money = dto.Money;
-            Inventory = new CartModel(dto.Inventory);
+            Cart = new CartModel(dto.Cart);
         }
 
         // direct creation
-        public CustomerModel(Guid id, string name, float money, ICartModel inventory)
+        public CustomerModel(Guid id, string name, float money, ICartModel cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
     }
 }

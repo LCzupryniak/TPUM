@@ -32,7 +32,7 @@ namespace Client.Presentation.Model.Tests
 
         public void DeduceMaintenanceCost(ICustomerDataTransferObject customer)
         {
-            foreach (IProductDataTransferObject item in customer.Inventory.Items)
+            foreach (IProductDataTransferObject item in customer.Cart.Items)
             {
                 customer.Money -= item.MaintenanceCost;
             }
@@ -62,45 +62,45 @@ namespace Client.Presentation.Model.Tests
     }
 
 
-    // Dummy implementation of IInventoryLogic
-    internal class DummyInventoryLogic : ICartLogic
+    // Dummy implementation of ICartLogic
+    internal class DummyCartLogic : ICartLogic
     {
-        internal readonly Dictionary<Guid, IInventoryDataTransferObject> Inventories = new();
+        internal readonly Dictionary<Guid, ICartDataTransferObject> Carts = new();
 
-        public void Add(IInventoryDataTransferObject item)
+        public void Add(ICartDataTransferObject item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            Inventories[item.Id] = item;
+            Carts[item.Id] = item;
         }
 
-        public IEnumerable<IInventoryDataTransferObject> GetAll()
+        public IEnumerable<ICartDataTransferObject> GetAll()
         {
-            return Inventories.Values.ToList();
+            return Carts.Values.ToList();
         }
 
-        public IInventoryDataTransferObject? Get(Guid id)
+        public ICartDataTransferObject? Get(Guid id)
         {
-            Inventories.TryGetValue(id, out IInventoryDataTransferObject? inventory);
-            return inventory;
+            Carts.TryGetValue(id, out ICartDataTransferObject? cart);
+            return cart;
         }
 
-        public bool Remove(IInventoryDataTransferObject item)
+        public bool Remove(ICartDataTransferObject item)
         {
             if (item == null) return false;
-            return Inventories.Remove(item.Id);
+            return Carts.Remove(item.Id);
         }
 
         public bool RemoveById(Guid id)
         {
-            return Inventories.Remove(id);
+            return Carts.Remove(id);
         }
 
-        public bool Update(Guid id, IInventoryDataTransferObject item)
+        public bool Update(Guid id, ICartDataTransferObject item)
         {
             if (item == null) throw new ArgumentNullException(nameof(item));
-            if (Inventories.ContainsKey(id))
+            if (Carts.ContainsKey(id))
             {
-                Inventories[id] = item;
+                Carts[id] = item;
                 return true;
             }
             return false;
@@ -210,10 +210,10 @@ namespace Client.Presentation.Model.Tests
         public string Name { get; set; } = string.Empty;
         public float Money { get; set; }
         // Uses object reference as per the interface
-        public IInventoryDataTransferObject Inventory { get; set; } = null!; // Initialize with null-forgiving, set in test setup
+        public ICartDataTransferObject Cart { get; set; } = null!; // Initialize with null-forgiving, set in test setup
     }
 
-    internal class DummyInventoryDto : IInventoryDataTransferObject
+    internal class DummyCartDto : ICartDataTransferObject
     {
         public Guid Id { get; set; }
         public int Capacity { get; set; }

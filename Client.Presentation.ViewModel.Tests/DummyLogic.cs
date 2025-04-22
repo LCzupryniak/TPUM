@@ -7,24 +7,24 @@ namespace Client.Presentation.ViewModel.Tests
         public Guid Id { get; }
         public string Name { get; }
         public float Money { get; }
-        public ICartModel Inventory { get; }
+        public ICartModel Cart { get; }
 
-        public DummyCustomerModel(Guid id, string name, float money, ICartModel inventory)
+        public DummyCustomerModel(Guid id, string name, float money, ICartModel cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
     }
 
-    internal class DummyInventoryModel : ICartModel
+    internal class DummyCartModel : ICartModel
     {
         public Guid Id { get; }
         public int Capacity { get; }
         public IEnumerable<IProductModel> Items { get; }
 
-        public DummyInventoryModel(Guid id, int capacity, IEnumerable<IProductModel> items)
+        public DummyCartModel(Guid id, int capacity, IEnumerable<IProductModel> items)
         {
             Id = id;
             Capacity = capacity;
@@ -65,18 +65,18 @@ namespace Client.Presentation.ViewModel.Tests
     internal class DummyCustomerModelService : ICustomerModelService
     {
         private readonly Dictionary<Guid, ICustomerModel> _customers = new();
-        private readonly ICartModelService _inventoryService;
+        private readonly ICartModelService _cartService;
 
-        public DummyCustomerModelService(ICartModelService inventoryService)
+        public DummyCustomerModelService(ICartModelService cartService)
         {
-            _inventoryService = inventoryService;
+            _cartService = cartService;
         }
 
-        public void AddCustomer(Guid id, string name, float money, Guid inventoryId)
+        public void AddCustomer(Guid id, string name, float money, Guid cartId)
         {
-            ICartModel? inventory = _inventoryService.GetInventory(inventoryId);
-            if (inventory == null) throw new ArgumentException("Invalid inventory ID");
-            _customers[id] = new DummyCustomerModel(id, name, money, inventory);
+            ICartModel? cart = _cartService.GetCart(cartId);
+            if (cart == null) throw new ArgumentException("Invalid cart ID");
+            _customers[id] = new DummyCustomerModel(id, name, money, cart);
         }
 
         public IEnumerable<ICustomerModel> GetAllCustomers() => _customers.Values;
@@ -85,12 +85,12 @@ namespace Client.Presentation.ViewModel.Tests
 
         public bool RemoveCustomer(Guid id) => _customers.Remove(id);
 
-        public bool UpdateCustomer(Guid id, string name, float money, Guid inventoryId)
+        public bool UpdateCustomer(Guid id, string name, float money, Guid cartId)
         {
             if (!_customers.ContainsKey(id)) return false;
-            ICartModel? inventory = _inventoryService.GetInventory(inventoryId);
-            if (inventory == null) return false;
-            _customers[id] = new DummyCustomerModel(id, name, money, inventory);
+            ICartModel? cart = _cartService.GetCart(cartId);
+            if (cart == null) return false;
+            _customers[id] = new DummyCustomerModel(id, name, money, cart);
             return true;
         }
 
@@ -98,24 +98,24 @@ namespace Client.Presentation.ViewModel.Tests
         {
             foreach (ICustomerModel customer in _customers.Values)
             {
-                float totalCost = customer.Inventory.Items.Sum(item => item.MaintenanceCost);
-                _customers[customer.Id] = new DummyCustomerModel(customer.Id, customer.Name, Math.Max(0, customer.Money - totalCost), customer.Inventory);
+                float totalCost = customer.Cart.Items.Sum(item => item.MaintenanceCost);
+                _customers[customer.Id] = new DummyCustomerModel(customer.Id, customer.Name, Math.Max(0, customer.Money - totalCost), customer.Cart);
             }
         }
     }
 
-    internal class DummyInventoryModelService : ICartModelService
+    internal class DummyCartModelService : ICartModelService
     {
-        private readonly Dictionary<Guid, ICartModel> _inventories = new();
+        private readonly Dictionary<Guid, ICartModel> _carts = new();
 
         public void Add(Guid id, int capacity)
         {
-            _inventories[id] = new DummyInventoryModel(id, capacity, new List<IProductModel>());
+            _carts[id] = new DummyCartModel(id, capacity, new List<IProductModel>());
         }
 
-        public IEnumerable<ICartModel> GetAllInventories() => _inventories.Values;
+        public IEnumerable<ICartModel> GetAllCarts() => _carts.Values;
 
-        public ICartModel? GetInventory(Guid id) => _inventories.GetValueOrDefault(id);
+        public ICartModel? GetCart(Guid id) => _carts.GetValueOrDefault(id);
     }
 
     internal class DummyItemModelService : IProductModelService
@@ -177,7 +177,7 @@ namespace Client.Presentation.ViewModel.Tests
                 float totalCost = order.ItemsToBuy.Sum(item => item.Price);
                 if (order.Buyer.Money >= totalCost)
                 {
-                    _customerService.UpdateCustomer(order.Buyer.Id, order.Buyer.Name, order.Buyer.Money - totalCost, order.Buyer.Inventory.Id);
+                    _customerService.UpdateCustomer(order.Buyer.Id, order.Buyer.Name, order.Buyer.Money - totalCost, order.Buyer.Cart.Id);
                     _orders.Remove(order.Id);
                 }
             }

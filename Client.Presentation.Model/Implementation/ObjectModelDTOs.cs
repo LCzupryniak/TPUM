@@ -22,20 +22,20 @@ namespace Client.Presentation.Model.Implementation
             : this(model.Id, model.Name, model.Price, model.MaintenanceCost) { }
     }
 
-    // Inventory DTO
-    internal class TransientInventoryDTO : IInventoryDataTransferObject
+    // Cart DTO
+    internal class TransientCartDTO : ICartDataTransferObject
     {
         public Guid Id { get; }
         public int Capacity { get; }
         public IEnumerable<IProductDataTransferObject> Items { get; }
 
-        public TransientInventoryDTO(Guid id, int capacity, IEnumerable<IProductDataTransferObject> items)
+        public TransientCartDTO(Guid id, int capacity, IEnumerable<IProductDataTransferObject> items)
         {
             Id = id;
             Capacity = capacity;
             Items = items?.ToList() ?? new List<IProductDataTransferObject>();
         }
-        public TransientInventoryDTO(ICartModel model)
+        public TransientCartDTO(ICartModel model)
            : this(model.Id, model.Capacity, model.Items.Select(i => new TransientItemDTO(i))) { }
     }
 
@@ -45,17 +45,17 @@ namespace Client.Presentation.Model.Implementation
         public Guid Id { get; }
         public string Name { get; set; }
         public float Money { get; set; }
-        public IInventoryDataTransferObject Inventory { get; set; }
+        public ICartDataTransferObject Cart { get; set; }
 
-        public TransientCustomerDTO(Guid id, string name, float money, IInventoryDataTransferObject inventory)
+        public TransientCustomerDTO(Guid id, string name, float money, ICartDataTransferObject cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
         public TransientCustomerDTO(ICustomerModel model)
-             : this(model.Id, model.Name, model.Money, new TransientInventoryDTO(model.Inventory)) { }
+             : this(model.Id, model.Name, model.Money, new TransientCartDTO(model.Cart)) { }
     }
 
     // Order DTO

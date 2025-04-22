@@ -25,7 +25,7 @@ namespace Client.Presentation.ViewModel
         #region Properties
 
         public ObservableCollection<ICustomerModel> Customers { get; } = new ObservableCollection<ICustomerModel>();
-        public ObservableCollection<IProductModel> SelectedCustomerInventory { get; } = new ObservableCollection<IProductModel>();
+        public ObservableCollection<IProductModel> SelectedCustomerCart { get; } = new ObservableCollection<IProductModel>();
         public ObservableCollection<IProductModel> ShopItems { get; } = new ObservableCollection<IProductModel>();
         public ObservableCollection<IOrderModel> Orders { get; } = new ObservableCollection<IOrderModel>();
 
@@ -125,7 +125,7 @@ namespace Client.Presentation.ViewModel
                 {
                     await _connectionService.FetchCustomers();
                     await _connectionService.FetchItems();
-                    await _connectionService.FetchInventories();
+                    await _connectionService.FetchCarts();
                 });
             });
 
@@ -224,16 +224,16 @@ namespace Client.Presentation.ViewModel
             if (_selectedCustomer != null)
             {
                 SelectedCustomerMoney = _selectedCustomer.Money;
-                SelectedCustomerInventory.Clear();
-                foreach (IProductModel item in _selectedCustomer.Inventory.Items)
+                SelectedCustomerCart.Clear();
+                foreach (IProductModel item in _selectedCustomer.Cart.Items)
                 {
-                    SelectedCustomerInventory.Add(item);
+                    SelectedCustomerCart.Add(item);
                 }
             }
             else
             {
                 SelectedCustomerMoney = 0;
-                SelectedCustomerInventory.Clear();
+                SelectedCustomerCart.Clear();
             }
         }
 

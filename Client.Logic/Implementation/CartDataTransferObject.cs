@@ -2,7 +2,7 @@
 
 namespace Client.Logic.Implementation
 {
-    internal class CartDataTransferObject : IInventoryDataTransferObject
+    internal class CartDataTransferObject : ICartDataTransferObject
     {
         public Guid Id { get; }
         public int Capacity { get; }

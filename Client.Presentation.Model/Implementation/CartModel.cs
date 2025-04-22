@@ -10,7 +10,7 @@ namespace Client.Presentation.Model.Implementation
         public IEnumerable<IProductModel> Items { get; }
 
         // DTO
-        public CartModel(IInventoryDataTransferObject dto)
+        public CartModel(ICartDataTransferObject dto)
         {
             Id = dto.Id;
             Capacity = dto.Capacity;

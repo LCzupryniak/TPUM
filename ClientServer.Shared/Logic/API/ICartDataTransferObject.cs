@@ -1,6 +1,6 @@
 namespace ClientServer.Shared.Logic.API
 {
-    public interface IInventoryDataTransferObject
+    public interface ICartDataTransferObject
     {
         public abstract Guid Id { get; }
         public abstract int Capacity { get; }

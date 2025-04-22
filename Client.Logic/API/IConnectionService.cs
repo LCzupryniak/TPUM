@@ -8,7 +8,7 @@
         public Action? onDataArrived { set; get; }
 
         public Task FetchItems();
-        public Task FetchInventories();
+        public Task FetchCarts();
         public Task FetchCustomers();
 
         public Task CreateOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds);

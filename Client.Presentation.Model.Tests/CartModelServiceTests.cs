@@ -6,16 +6,16 @@ namespace Client.Presentation.Model.Tests
     [TestClass]
     public class CartModelServiceTests
     {
-        private DummyInventoryLogic _dummyInventoryLogic = null!;
+        private DummyCartLogic _dummyCartLogic = null!;
         private DummyItemLogic _dummyItemLogic = null!;
 
-        private ICartModelService _inventoryModelService = null!;
+        private ICartModelService _cartModelService = null!;
 
         private Guid _inv1Id, _inv2Id;
         private Guid _item1Id, _item2Id;
 
-        private DummyInventoryDto _invDto1 = null!;
-        private DummyInventoryDto _invDto2 = null!;
+        private DummyCartDto _invDto1 = null!;
+        private DummyCartDto _invDto2 = null!;
         private DummyItemDto _itemDto1 = null!;
         private DummyItemDto _itemDto2 = null!;
 
@@ -23,37 +23,37 @@ namespace Client.Presentation.Model.Tests
         public void TestInitialize()
         {
             // Instantiate Dummies
-            _dummyInventoryLogic = new DummyInventoryLogic();
+            _dummyCartLogic = new DummyCartLogic();
             _dummyItemLogic = new DummyItemLogic();
 
             // Create Test DTOs
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
-            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Potion", Price = 10, MaintenanceCost = 0 };
-            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Scroll", Price = 25, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Tablet", Price = 10, MaintenanceCost = 0 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Laptop", Price = 25, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
 
             _inv1Id = Guid.NewGuid();
             _inv2Id = Guid.NewGuid();
-            _invDto1 = new DummyInventoryDto { Id = _inv1Id, Capacity = 10, Items = new List<IProductDataTransferObject> { _itemDto1, _itemDto2 } };
-            _invDto2 = new DummyInventoryDto { Id = _inv2Id, Capacity = 5, Items = new List<IProductDataTransferObject>() }; // Empty
-            _dummyInventoryLogic.Inventories.Add(_invDto1.Id, _invDto1);
-            _dummyInventoryLogic.Inventories.Add(_invDto2.Id, _invDto2);
+            _invDto1 = new DummyCartDto { Id = _inv1Id, Capacity = 10, Items = new List<IProductDataTransferObject> { _itemDto1, _itemDto2 } };
+            _invDto2 = new DummyCartDto { Id = _inv2Id, Capacity = 5, Items = new List<IProductDataTransferObject>() }; // Empty
+            _dummyCartLogic.Carts.Add(_invDto1.Id, _invDto1);
+            _dummyCartLogic.Carts.Add(_invDto2.Id, _invDto2);
 
-            _inventoryModelService = ModelFactory.CreateInventoryModelService(_dummyInventoryLogic);
+            _cartModelService = ModelFactory.CreateCartModelService(_dummyCartLogic);
         }
 
         [TestMethod]
-        public void GetAllInventories_WhenCalled_ReturnsAllMappedInventoryModels()
+        public void GetAllCarts_WhenCalled_ReturnsAllMappedCartModels()
         {
-            List<ICartModel> inventories = _inventoryModelService.GetAllInventories().ToList();
+            List<ICartModel> carts = _cartModelService.GetAllCarts().ToList();
 
-            Assert.IsNotNull(inventories);
-            Assert.AreEqual(2, inventories.Count);
+            Assert.IsNotNull(carts);
+            Assert.AreEqual(2, carts.Count);
 
-            // Verify mapping for one inventory
-            ICartModel? inv1Model = inventories.FirstOrDefault(i => i.Id == _inv1Id);
+            // Verify mapping for one cart
+            ICartModel? inv1Model = carts.FirstOrDefault(i => i.Id == _inv1Id);
             Assert.IsNotNull(inv1Model);
             Assert.AreEqual(_inv1Id, inv1Model.Id);
             Assert.AreEqual(10, inv1Model.Capacity);
@@ -62,43 +62,43 @@ namespace Client.Presentation.Model.Tests
 
             IProductModel? item1Model = inv1Model.Items.FirstOrDefault(itm => itm.Id == _item1Id);
             Assert.IsNotNull(item1Model);
-            Assert.AreEqual("Potion", item1Model.Name);
+            Assert.AreEqual("Tablet", item1Model.Name);
             Assert.AreEqual(10, item1Model.Price);
         }
 
         [TestMethod]
-        public void GetInventory_ExistingId_ReturnsCorrectMappedInventoryModel()
+        public void GetCart_ExistingId_ReturnsCorrectMappedCartModel()
         {
-            ICartModel? inventory = _inventoryModelService.GetInventory(_inv1Id);
+            ICartModel? cart = _cartModelService.GetCart(_inv1Id);
 
-            Assert.IsNotNull(inventory);
-            Assert.AreEqual(_inv1Id, inventory.Id);
-            Assert.AreEqual(10, inventory.Capacity);
-            Assert.IsNotNull(inventory.Items);
-            Assert.AreEqual(2, inventory.Items.Count());
-            Assert.AreEqual("Potion", inventory.Items.First().Name);
+            Assert.IsNotNull(cart);
+            Assert.AreEqual(_inv1Id, cart.Id);
+            Assert.AreEqual(10, cart.Capacity);
+            Assert.IsNotNull(cart.Items);
+            Assert.AreEqual(2, cart.Items.Count());
+            Assert.AreEqual("Tablet", cart.Items.First().Name);
         }
 
         [TestMethod]
-        public void GetInventory_ExistingEmptyInventory_ReturnsMappedInventoryModelWithEmptyItems()
+        public void GetCart_ExistingEmptyCart_ReturnsMappedCartModelWithEmptyItems()
         {
-            ICartModel? inventory = _inventoryModelService.GetInventory(_inv2Id);
+            ICartModel? cart = _cartModelService.GetCart(_inv2Id);
 
-            Assert.IsNotNull(inventory);
-            Assert.AreEqual(_inv2Id, inventory.Id);
-            Assert.AreEqual(5, inventory.Capacity);
-            Assert.IsNotNull(inventory.Items);
-            Assert.AreEqual(0, inventory.Items.Count());
+            Assert.IsNotNull(cart);
+            Assert.AreEqual(_inv2Id, cart.Id);
+            Assert.AreEqual(5, cart.Capacity);
+            Assert.IsNotNull(cart.Items);
+            Assert.AreEqual(0, cart.Items.Count());
         }
 
         [TestMethod]
-        public void GetInventory_NonExistingId_ReturnsNull()
+        public void GetCart_NonExistingId_ReturnsNull()
         {
             Guid nonExistingId = Guid.NewGuid();
 
-            ICartModel? inventory = _inventoryModelService.GetInventory(nonExistingId);
+            ICartModel? cart = _cartModelService.GetCart(nonExistingId);
 
-            Assert.IsNull(inventory);
+            Assert.IsNull(cart);
         }
     }
 }

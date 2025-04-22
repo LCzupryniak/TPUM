@@ -13,16 +13,16 @@ namespace Client.Presentation.Model.API
         }
 
         // Static creation methods directly
-        public static ICustomerModelService CreateCustomerModelService(ICustomerLogic? customerLogic = null, ICartLogic? inventoryLogic = null)
+        public static ICustomerModelService CreateCustomerModelService(ICustomerLogic? customerLogic = null, ICartLogic? cartLogic = null)
         {
             ICustomerLogic resolvedCustomerLogic = ResolveLogic(customerLogic, () => LogicFactory.CreateCustomerLogic());
-            ICartLogic resolvedInventoryLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
-            return new CustomerModelService(resolvedCustomerLogic, resolvedInventoryLogic);
+            ICartLogic resolvedCartLogic = ResolveLogic(cartLogic, () => LogicFactory.CreateCartLogic());
+            return new CustomerModelService(resolvedCustomerLogic, resolvedCartLogic);
         }
 
-        public static ICartModelService CreateInventoryModelService(ICartLogic? inventoryLogic = null)
+        public static ICartModelService CreateCartModelService(ICartLogic? cartLogic = null)
         {
-            ICartLogic resolvedLogic = ResolveLogic(inventoryLogic, () => LogicFactory.CreateInventoryLogic());
+            ICartLogic resolvedLogic = ResolveLogic(cartLogic, () => LogicFactory.CreateCartLogic());
             return new CartModelService(resolvedLogic);
         }
 

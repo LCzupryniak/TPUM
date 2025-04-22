@@ -13,48 +13,48 @@ namespace Server.Logic.Implementation
             this._repository = repository;
         }
 
-        public static IInventoryDataTransferObject Map(ICart inventory)
+        public static ICartDataTransferObject Map(ICart cart)
         {
             List<IProductDataTransferObject> mappedItems = new List<IProductDataTransferObject>();
 
-            foreach (IProduct item in inventory.Items)
+            foreach (IProduct item in cart.Items)
             {
                 mappedItems.Add(ProductLogic.Map(item));
             }
 
-            return new InventoryDataTransferObject(inventory.Id, inventory.Capacity, mappedItems);
+            return new CartDataTransferObject(cart.Id, cart.Capacity, mappedItems);
         }
 
-        public IEnumerable<IInventoryDataTransferObject> GetAll()
+        public IEnumerable<ICartDataTransferObject> GetAll()
         {
             lock (_lock)
             {
-                List<IInventoryDataTransferObject> all = new List<IInventoryDataTransferObject>();
+                List<ICartDataTransferObject> all = new List<ICartDataTransferObject>();
 
-                foreach (ICart inventory in _repository.GetAllInventories())
+                foreach (ICart cart in _repository.GetAllCarts())
                 {
-                    all.Add(Map(inventory));
+                    all.Add(Map(cart));
                 }
 
                 return all;
             }
         }
 
-        public IInventoryDataTransferObject? Get(Guid id)
+        public ICartDataTransferObject? Get(Guid id)
         {
             lock (_lock)
             {
-                ICart? inventory = _repository.GetInventory(id);
+                ICart? cart = _repository.GetCart(id);
 
-                return inventory is not null ? Map(inventory) : null;
+                return cart is not null ? Map(cart) : null;
             }
         }
 
-        public void Add(IInventoryDataTransferObject inventory)
+        public void Add(ICartDataTransferObject cart)
         {
             lock (_lock)
             {
-                _repository.AddInventory(new MappedDataInventory(inventory));
+                _repository.AddCart(new MappedDataCart(cart));
             }
         }
 
@@ -62,23 +62,23 @@ namespace Server.Logic.Implementation
         {
             lock (_lock)
             {
-                return _repository.RemoveInventoryById(id);
+                return _repository.RemoveCartById(id);
             }
         }
 
-        public bool Remove(IInventoryDataTransferObject inventory)
+        public bool Remove(ICartDataTransferObject cart)
         {
             lock (_lock)
             {
-                return _repository.RemoveInventory(new MappedDataInventory(inventory));
+                return _repository.RemoveCart(new MappedDataCart(cart));
             }
         }
 
-        public bool Update(Guid id, IInventoryDataTransferObject inventory)
+        public bool Update(Guid id, ICartDataTransferObject cart)
         {
             lock (_lock)
             {
-                return _repository.UpdateInventory(id, new MappedDataInventory(inventory));
+                return _repository.UpdateCart(id, new MappedDataCart(cart));
             }
         }
     }

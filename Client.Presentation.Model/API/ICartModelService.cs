@@ -2,8 +2,8 @@
 {
     public interface ICartModelService
     {
-        public abstract IEnumerable<ICartModel> GetAllInventories();
-        public abstract ICartModel? GetInventory(Guid id);
+        public abstract IEnumerable<ICartModel> GetAllCarts();
+        public abstract ICartModel? GetCart(Guid id);
 
         public abstract void Add(Guid id, int capacity);
     }

@@ -6,6 +6,6 @@
 
         public abstract float Money { get; }
 
-        public abstract ICart Inventory { get; }
+        public abstract ICart Cart { get; }
     }
 }

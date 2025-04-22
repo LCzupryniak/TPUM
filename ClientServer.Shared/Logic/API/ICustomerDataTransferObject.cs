@@ -8,6 +8,6 @@
 
         public abstract float Money { get; set; }
 
-        public abstract IInventoryDataTransferObject Inventory { get; set; }
+        public abstract ICartDataTransferObject Cart { get; set; }
     }
 }

@@ -7,21 +7,21 @@ namespace Client.Data.Tests
         public Guid Id { get; } = Guid.Empty;
         public string Name { get; private set; }
         public float Money { get; set; }
-        public ICart Inventory { get; private set; }
+        public ICart Cart { get; private set; }
 
-        public DummyCustomer(string name, float money, ICart inventory)
+        public DummyCustomer(string name, float money, ICart cart)
         {
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
 
-        public DummyCustomer(Guid id, string name, float money, ICart inventory)
+        public DummyCustomer(Guid id, string name, float money, ICart cart)
         {
             Id = id;
             Name = name;
             Money = money;
-            Inventory = inventory;
+            Cart = cart;
         }
     }
 }

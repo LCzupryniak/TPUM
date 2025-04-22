@@ -24,7 +24,7 @@ namespace Client.Logic.Tests
             public int MaintenanceCost { get; set; } = 0;
         }
 
-        private class TestInventory : ICart
+        private class TestCart : ICart
         {
             public Guid Id { get; set; } = Guid.NewGuid();
             public int Capacity { get; set; } = 10;
@@ -36,7 +36,7 @@ namespace Client.Logic.Tests
             public Guid Id { get; set; } = Guid.NewGuid();
             public string Name { get; set; } = "Test Customer";
             public float Money { get; set; } = 100f;
-            public ICart Inventory { get; set; } = new TestInventory();
+            public ICart Cart { get; set; } = new TestCart();
         }
 
 

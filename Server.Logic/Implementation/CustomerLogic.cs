@@ -15,7 +15,7 @@ namespace Server.Logic.Implementation
 
         public static ICustomerDataTransferObject Map(ICustomer customer)
         {
-            return new CustomerDataTransferObject(customer.Id, customer.Name, customer.Money, CartLogic.Map(customer.Inventory));
+            return new CustomerDataTransferObject(customer.Id, customer.Name, customer.Money, CartLogic.Map(customer.Cart));
         }
 
         public IEnumerable<ICustomerDataTransferObject> GetAll()
@@ -81,7 +81,7 @@ namespace Server.Logic.Implementation
             {
                 foreach (ICustomerDataTransferObject customer in GetAll())
                 {
-                    foreach (IProductDataTransferObject item in customer.Inventory.Items)
+                    foreach (IProductDataTransferObject item in customer.Cart.Items)
                     {
                         customer.Money -= item.MaintenanceCost;
                     }
@@ -95,7 +95,7 @@ namespace Server.Logic.Implementation
         {
             lock (_lock)
             {
-                foreach (IProductDataTransferObject item in customer.Inventory.Items)
+                foreach (IProductDataTransferObject item in customer.Cart.Items)
                 {
                     customer.Money -= item.MaintenanceCost;
                 }

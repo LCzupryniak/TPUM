@@ -90,22 +90,22 @@ namespace Client.Logic.Implementation
                 {
                     ICustomerDataTransferObject buyer = order.Buyer;
 
-                    List<IProductDataTransferObject> newInventoryItems = new List<IProductDataTransferObject>();
+                    List<IProductDataTransferObject> newCartItems = new List<IProductDataTransferObject>();
                     foreach (IProductDataTransferObject item in order.ItemsToBuy)
                     {
-                        newInventoryItems.Add(item);
+                        newCartItems.Add(item);
 
                         buyer.Money -= item.Price;
 
                         _repository.RemoveItem(new MappedDataProduct(item));
                     }
 
-                    foreach (IProductDataTransferObject item in buyer.Inventory.Items)
+                    foreach (IProductDataTransferObject item in buyer.Cart.Items)
                     {
-                        newInventoryItems.Add(item);
+                        newCartItems.Add(item);
                     }
 
-                    buyer.Inventory = new CartDataTransferObject(buyer.Inventory.Id, buyer.Inventory.Capacity, newInventoryItems);
+                    buyer.Cart = new CartDataTransferObject(buyer.Cart.Id, buyer.Cart.Capacity, newCartItems);
 
                     _repository.UpdateCustomer(buyer.Id, new MappedDataCustomer(buyer));
 

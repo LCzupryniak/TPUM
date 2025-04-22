@@ -6,58 +6,58 @@ namespace Client.Data.Tests
     public class CartDataRepositoryTests : DataRepositoryTestBase
     {
         [TestMethod]
-        public void Add_ShouldAddInventoryToRepository()
+        public void Add_ShouldAddCartToRepository()
         {
-            DummyCart inventory = new DummyCart(10);
+            DummyCart cart = new DummyCart(10);
 
-            _repository.AddInventory(inventory);
+            _repository.AddCart(cart);
 
-            Assert.IsTrue(_mockContext.Inventories.ContainsKey(inventory.Id));
-            Assert.AreEqual(inventory.Capacity, _mockContext.Inventories[inventory.Id].Capacity);
+            Assert.IsTrue(_mockContext.Carts.ContainsKey(cart.Id));
+            Assert.AreEqual(cart.Capacity, _mockContext.Carts[cart.Id].Capacity);
         }
 
         [TestMethod]
-        public void Get_ShouldReturnInventory_WhenInventoryExists()
+        public void Get_ShouldReturnCart_WhenCartExists()
         {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCart inventory = new DummyCart(inventoryId, 10);
-            _mockContext.Inventories[inventoryId] = inventory;
+            Guid cartId = Guid.NewGuid();
+            DummyCart cart = new DummyCart(cartId, 10);
+            _mockContext.Carts[cartId] = cart;
 
-            ICart? result = _repository.GetInventory(inventoryId);
+            ICart? result = _repository.GetCart(cartId);
 
             Assert.IsNotNull(result);
-            Assert.AreEqual(inventory.Capacity, result.Capacity);
+            Assert.AreEqual(cart.Capacity, result.Capacity);
         }
 
         [TestMethod]
-        public void Get_ShouldReturnNull_WhenInventoryDoesNotExist()
+        public void Get_ShouldReturnNull_WhenCartDoesNotExist()
         {
-            Guid inventoryId = Guid.NewGuid();
+            Guid cartId = Guid.NewGuid();
 
-            ICart? result = _repository.GetInventory(inventoryId);
+            ICart? result = _repository.GetCart(cartId);
 
             Assert.IsNull(result);
         }
 
         [TestMethod]
-        public void Remove_ShouldRemoveInventory_WhenInventoryExists()
+        public void Remove_ShouldRemoveCart_WhenCartExists()
         {
-            Guid inventoryId = Guid.NewGuid();
-            DummyCart inventory = new DummyCart(inventoryId, 10);
-            _mockContext.Inventories[inventoryId] = inventory;
+            Guid cartId = Guid.NewGuid();
+            DummyCart cart = new DummyCart(cartId, 10);
+            _mockContext.Carts[cartId] = cart;
 
-            bool result = _repository.RemoveInventory(inventory);
+            bool result = _repository.RemoveCart(cart);
 
             Assert.IsTrue(result);
-            Assert.IsFalse(_mockContext.Inventories.ContainsKey(inventoryId));
+            Assert.IsFalse(_mockContext.Carts.ContainsKey(cartId));
         }
 
         [TestMethod]
-        public void Remove_ShouldReturnFalse_WhenInventoryDoesNotExist()
+        public void Remove_ShouldReturnFalse_WhenCartDoesNotExist()
         {
-            DummyCart inventory = new DummyCart(Guid.NewGuid(), 10);
+            DummyCart cart = new DummyCart(Guid.NewGuid(), 10);
 
-            bool result = _repository.RemoveInventory(inventory);
+            bool result = _repository.RemoveCart(cart);
 
             Assert.IsFalse(result);
         }

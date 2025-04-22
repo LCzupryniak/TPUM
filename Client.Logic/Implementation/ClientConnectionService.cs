@@ -60,7 +60,7 @@ namespace Client.Logic.Implementation
             await WebSocketClient.CurrentConnection.SendAsync("GET /items");
         }
 
-        public async Task FetchInventories()
+        public async Task FetchCarts()
         {
             if (WebSocketClient.CurrentConnection == null)
             {
@@ -69,7 +69,7 @@ namespace Client.Logic.Implementation
                 return;
             }
 
-            await WebSocketClient.CurrentConnection.SendAsync("GET /inventories");
+            await WebSocketClient.CurrentConnection.SendAsync("GET /carts");
         }
 
         public async Task FetchCustomers()
