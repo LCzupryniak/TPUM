@@ -37,7 +37,8 @@
                 VerticalAlignment="Center"
                 DisplayMemberPath="Name"
                 ItemsSource="{Binding Customers}"
-                SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}" />
+                SelectedItem="{Binding SelectedCustomer, Mode=TwoWay}" 
+                HorizontalContentAlignment="Stretch"/>
 
             <TextBlock
                 Margin="0,0,5,0"

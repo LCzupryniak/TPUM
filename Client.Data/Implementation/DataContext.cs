@@ -56,7 +56,7 @@ namespace Client.Data.Implementation
                 _items.Clear();
 
                 List<SerializableProduct> items = (List<SerializableProduct>)serializer.Deserialize(reader)!;
-                foreach (var item in items)
+                foreach (SerializableProduct item in items)
                 {
                     _items[item.Id] = new Product(item.Id, item.Name, item.Price, item.MaintenanceCost);
                 }
@@ -71,10 +71,10 @@ namespace Client.Data.Implementation
                 _customers.Clear();
 
                 List<SerializableCustomer> customers = (List<SerializableCustomer>)serializer.Deserialize(reader)!;
-                foreach (var customer in customers)
+                foreach (SerializableCustomer customer in customers)
                 {
                     List<IProduct> items = new List<IProduct>();
-                    foreach (var item in customer.Cart.Items)
+                    foreach (SerializableProduct item in customer.Cart.Items)
                     {
                         items.Add(new Product(item.Id, item.Name, item.Price, item.MaintenanceCost));
                     }
@@ -94,10 +94,10 @@ namespace Client.Data.Implementation
                 _carts.Clear();
 
                 List<SerializableCart> carts = (List<SerializableCart>)serializer.Deserialize(reader)!;
-                foreach (var inv in carts)
+                foreach (SerializableCart inv in carts)
                 {
                     List<IProduct> items = new List<IProduct>();
-                    foreach (var item in inv.Items)
+                    foreach (SerializableProduct item in inv.Items)
                     {
                         items.Add(new Product(item.Id, item.Name, item.Price, item.MaintenanceCost));
                     }
