@@ -1,4 +1,4 @@
-﻿using ClientServer.Shared.WebSocket;
+﻿using Server.ObjectModels.WebSocket;
 using System.Net;
 using System.Net.WebSockets;
 using System.Text;

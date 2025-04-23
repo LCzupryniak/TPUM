@@ -1,7 +1,8 @@
 ﻿using Server.Data.API;
 using Server.Logic.Implementation;
-using ClientServer.Shared.Data.API;
-using ClientServer.Shared.Logic.API;
+using Server.ObjectModels.Logic.API;
+using Server.ObjectModels.Data.API;
+
 
 namespace Server.Logic.API
 {

@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<xs:schema elementFormDefault="qualified"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:import namespace="http://microsoft.com/wsdl/types/" schemaLocation="mswsdl.xsd" />
+  <xs:element name="Order" nillable="true" type="Order" />
+  <xs:complexType name="Order">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Id"
+        xmlns:q1="http://microsoft.com/wsdl/types/" type="q1:guid" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Buyer" type="Customer" />
+      <xs:element minOccurs="0" maxOccurs="1" name="ItemsToBuy" type="ArrayOfItem" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Customer">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Id"
+        xmlns:q2="http://microsoft.com/wsdl/types/" type="q2:guid" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Money" type="xs:float" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Cart" type="Cart" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Cart">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Id"
+        xmlns:q3="http://microsoft.com/wsdl/types/" type="q3:guid" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Capacity" type="xs:int" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Items" type="ArrayOfItem" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="ArrayOfItem">
+    <xs:sequence>
+      <xs:element minOccurs="0" maxOccurs="unbounded" name="Item" nillable="true" type="Item" />
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="Item">
+    <xs:sequence>
+      <xs:element minOccurs="1" maxOccurs="1" name="Id"
+        xmlns:q4="http://microsoft.com/wsdl/types/" type="q4:guid" />
+      <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string" />
+      <xs:element minOccurs="1" maxOccurs="1" name="Price" type="xs:int" />
+      <xs:element minOccurs="1" maxOccurs="1" name="MaintenanceCost" type="xs:int" />
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

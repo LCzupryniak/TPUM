@@ -25,13 +25,19 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Data", "Server.Data\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Logic", "Server.Logic\Server.Logic.csproj", "{D1A98382-6904-4E6D-AC6D-996F085B704D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientServer.Shared", "ClientServer.Shared\ClientServer.Shared.csproj", "{EFDB782E-E8F0-481E-9904-D592BEA4F9B5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.ObjectModels", "Server.ObjectModels\Server.ObjectModels.csproj", "{EFDB782E-E8F0-481E-9904-D592BEA4F9B5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Server.Presentation", "Server.Presentation\Server.Presentation.csproj", "{C87AFB60-523D-4FC7-8CA4-4E9ABAFC142C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Data.Tests", "Client.Data.Tests\Client.Data.Tests.csproj", "{A6D88136-2CCC-4A70-B286-4FC8A925A6EF}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.Logic.Tests", "Client.Logic.Tests\Client.Logic.Tests.csproj", "{55FCC5D3-0C61-4813-B76A-108ACC789BF0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataModel", "DataModel\DataModel.csproj", "{78E336E3-550F-4BB0-9FF8-D9E1B700DB76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client.ObjectModels", "Client.ObjectModels\Client.ObjectModels.csproj", "{ACA5B256-801C-435C-9AF7-02F9D30131BE}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "IntegrationTests\IntegrationTests.csproj", "{A8A2D575-3580-4CF3-86AD-1F68FC159016}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +105,18 @@ Global
 		{55FCC5D3-0C61-4813-B76A-108ACC789BF0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{55FCC5D3-0C61-4813-B76A-108ACC789BF0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{55FCC5D3-0C61-4813-B76A-108ACC789BF0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{78E336E3-550F-4BB0-9FF8-D9E1B700DB76}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{78E336E3-550F-4BB0-9FF8-D9E1B700DB76}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{78E336E3-550F-4BB0-9FF8-D9E1B700DB76}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{78E336E3-550F-4BB0-9FF8-D9E1B700DB76}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ACA5B256-801C-435C-9AF7-02F9D30131BE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ACA5B256-801C-435C-9AF7-02F9D30131BE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ACA5B256-801C-435C-9AF7-02F9D30131BE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ACA5B256-801C-435C-9AF7-02F9D30131BE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A8A2D575-3580-4CF3-86AD-1F68FC159016}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A8A2D575-3580-4CF3-86AD-1F68FC159016}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A8A2D575-3580-4CF3-86AD-1F68FC159016}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A8A2D575-3580-4CF3-86AD-1F68FC159016}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

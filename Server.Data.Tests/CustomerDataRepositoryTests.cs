@@ -1,4 +1,4 @@
-﻿using ClientServer.Shared.Data.API;
+﻿using Server.ObjectModels.Data.API;
 using Server.Data.API;
 
 namespace Server.Data.Tests
@@ -56,6 +56,17 @@ namespace Server.Data.Tests
 
             Assert.IsTrue(result);
             Assert.IsFalse(_mockContext.Customers.ContainsKey(customerId));
+        }
+
+        [TestMethod]
+        public void Remove_ShouldReturnFalse_WhenCustomerDoesNotExist()
+        {
+            DummyCart cart = new DummyCart(10);
+            DummyCustomer customer = new DummyCustomer(Guid.NewGuid(), "Customer1", 1000, cart);
+
+            bool result = _repository.RemoveCustomer(customer);
+
+            Assert.IsFalse(result);
         }
     }
 }

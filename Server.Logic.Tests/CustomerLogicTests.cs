@@ -1,5 +1,5 @@
-﻿using ClientServer.Shared.Data.API;
-using ClientServer.Shared.Logic.API;
+﻿using Server.ObjectModels.Data.API;
+using Server.ObjectModels.Logic.API;
 using Server.Logic.API;
 
 namespace Server.Logic.Tests
@@ -78,6 +78,18 @@ namespace Server.Logic.Tests
             ICustomerDataTransferObject? result = _logic.Get(customerId);
 
             Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void Add_ShouldAddCustomerToRepository()
+        {
+            ICustomerDataTransferObject customer = new DummyCustomerDataTransferObject(Guid.NewGuid(), "Customer1", 1000, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
+
+            _logic.Add(customer);
+
+            ICustomerDataTransferObject? result = _logic.Get(customer.Id);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(customer.Name, result.Name);
         }
     }
 }

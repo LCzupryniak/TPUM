@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client.Logic\Client.Logic.csproj" />
+    <ProjectReference Include="..\Client.ObjectModels\Client.ObjectModels.csproj" />
   </ItemGroup>
 
 </Project>

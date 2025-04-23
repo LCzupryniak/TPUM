@@ -16,7 +16,6 @@
     <ProjectReference Include="..\Client.Data.Tests\Client.Data.Tests.csproj" />
     <ProjectReference Include="..\Client.Data\Client.Data.csproj" />
     <ProjectReference Include="..\Client.Logic\Client.Logic.csproj" />
-    <ProjectReference Include="..\ClientServer.Shared\ClientServer.Shared.csproj" />
   </ItemGroup>
 
   <ItemGroup>

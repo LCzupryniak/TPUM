@@ -1,5 +1,5 @@
-﻿using ClientServer.Shared.Data.API;
-using ClientServer.Shared.Logic.API;
+﻿using Server.ObjectModels.Data.API;
+using Server.ObjectModels.Logic.API;
 
 namespace Server.Logic.Implementation
 {

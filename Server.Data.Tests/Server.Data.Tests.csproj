@@ -13,8 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\ClientServer.Shared\ClientServer.Shared.csproj" />
     <ProjectReference Include="..\Server.Data\Server.Data.csproj" />
+    <ProjectReference Include="..\Server.ObjectModels\Server.ObjectModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

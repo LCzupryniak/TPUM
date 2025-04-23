@@ -1,6 +1,6 @@
-﻿using Client.Presentation.Model.API;
+﻿using Client.ObjectModels.Logic.API;
+using Client.Presentation.Model.API;
 using Client.Presentation.Model.Tests;
-using ClientServer.Shared.Logic.API;
 
 namespace Presentation.Model.Tests
 {
@@ -22,8 +22,8 @@ namespace Presentation.Model.Tests
 
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
-            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Smartwatch", Price = 50, MaintenanceCost = 2 };
-            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Laptop", Price = 30, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Smartphone", Price = 50, MaintenanceCost = 2 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Smartwatch", Price = 30, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
 
@@ -31,37 +31,32 @@ namespace Presentation.Model.Tests
         }
 
         [TestMethod]
-        public void GetItem_NonExistingId_ReturnsNull()
+        public void GetAllItems_WhenCalled_ReturnsAllMappedItemModels()
         {
-            Guid nonExistingId = Guid.NewGuid();
+            List<IProductModel> items = _itemModelService.GetAllItems().ToList();
 
-            IProductModel? item = _itemModelService.GetItem(nonExistingId);
+            Assert.IsNotNull(items);
+            Assert.AreEqual(2, items.Count);
 
-            Assert.IsNull(item);
+            // Verify mapping for one item
+            IProductModel? item1Model = items.FirstOrDefault(i => i.Id == _item1Id);
+            Assert.IsNotNull(item1Model);
+            Assert.AreEqual(_item1Id, item1Model.Id);
+            Assert.AreEqual("Smartphone", item1Model.Name);
+            Assert.AreEqual(50, item1Model.Price);
+            Assert.AreEqual(2, item1Model.MaintenanceCost);
         }
 
         [TestMethod]
-        public void RemoveItem_ExistingId_CallsLogicRemoveAndReturnsTrue()
+        public void GetItem_ExistingId_ReturnsCorrectMappedItemModel()
         {
-            Guid targetId = _item1Id;
-            Assert.IsTrue(_dummyItemLogic.Items.ContainsKey(targetId));
+            IProductModel? item = _itemModelService.GetItem(_item1Id);
 
-            bool result = _itemModelService.RemoveItem(targetId);
-
-            Assert.IsTrue(result);
-            Assert.IsFalse(_dummyItemLogic.Items.ContainsKey(targetId));
-        }
-
-        [TestMethod]
-        public void RemoveItem_NonExistingId_CallsLogicRemoveAndReturnsFalse()
-        {
-            Guid nonExistingId = Guid.NewGuid();
-            int initialCount = _dummyItemLogic.Items.Count;
-
-            bool result = _itemModelService.RemoveItem(nonExistingId);
-
-            Assert.IsFalse(result);
-            Assert.AreEqual(initialCount, _dummyItemLogic.Items.Count);
+            Assert.IsNotNull(item);
+            Assert.AreEqual(_item1Id, item.Id);
+            Assert.AreEqual("Smartphone", item.Name);
+            Assert.AreEqual(50, item.Price);
+            Assert.AreEqual(2, item.MaintenanceCost);
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿using Server.Data.API;
-using ClientServer.Shared.Data.API;
+using Server.ObjectModels.Data.API;
 
 namespace Server.Data.Tests
 {

@@ -1,4 +1,5 @@
-﻿using ClientServer.Shared.Logic.API;
+﻿using Server.ObjectModels.Logic.API;
+
 
 namespace Server.Logic.Tests
 {

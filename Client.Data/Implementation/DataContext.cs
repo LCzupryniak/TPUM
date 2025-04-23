@@ -1,8 +1,10 @@
 ﻿using Client.Data.Websocket;
-using ClientServer.Shared.Data.API;
-using ClientServer.Shared.WebSocket;
-using Server.Presentation;
 using System.Xml.Serialization;
+using Client.Data.Mapping;
+using Client.ObjectModels.Generated;
+using Client.ObjectModels.Data.API;
+using System.Xml;
+using System.Diagnostics;
 
 namespace Client.Data.Implementation
 {
@@ -12,6 +14,11 @@ namespace Client.Data.Implementation
         private readonly Dictionary<Guid, IProduct> _items = new Dictionary<Guid, IProduct>();
         private readonly Dictionary<Guid, ICart> _carts = new Dictionary<Guid, ICart>();
         private readonly Dictionary<Guid, IOrder> _orders = new Dictionary<Guid, IOrder>();
+
+        private static readonly XmlSerializer ItemListSerializer = new XmlSerializer(typeof(ArrayOfItem));
+        private static readonly XmlSerializer CustomerListSerializer = new XmlSerializer(typeof(List<Customer>), new XmlRootAttribute("ListOfCustomer"));
+        private static readonly XmlSerializer CartListSerializer = new XmlSerializer(typeof(List<Cart>), new XmlRootAttribute("ListOfCart"));
+        private static readonly XmlSerializer OrderListSerializer = new XmlSerializer(typeof(List<Order>), new XmlRootAttribute("ListOfOrder"));
 
         public Dictionary<Guid, ICustomer> Customers => _customers;
         public Dictionary<Guid, IProduct> Items => _items;
@@ -27,82 +34,133 @@ namespace Client.Data.Implementation
 
         private void WebSocketClient_OnMessage(string obj)
         {
-            Console.WriteLine($"[SERVER] Got message about {obj.Split('|')[0]}");
 
-            switch (obj.Split('|')[0])
+            if (string.IsNullOrWhiteSpace(obj)) return;
+
+            Debug.WriteLine($"[CLIENT] Received XML {obj.Split('|')[0]}");
+
+
+            string rootElementName;
+
+            try
             {
-                case "ITEMS":
-                    SyncItems(obj.Split('|')[1]);
-                    break;
-                case "CUSTOMERS":
-                    SyncCustomers(obj.Split('|')[1]);
-                    break;
-                case "CARTS":
-                    SyncCarts(obj.Split('|')[1]);
-                    break;
-                default:
-                    Console.WriteLine("Unknown message type");
-                    return;
+                using (StringReader reader = new StringReader(obj))
+                using (XmlReader xmlReader = XmlReader.Create(reader))
+                {
+                    xmlReader.MoveToContent();
+                    rootElementName = xmlReader.Name;
+                }
+
+                Debug.WriteLine($"[CLIENT] Root element: <{rootElementName}>");
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[CLIENT] Failed to read root element from XML: {ex.Message}. XML: {obj}");
+                return;
             }
 
-            OnDataChanged.Invoke();
+            try
+            {
+                bool dataChanged = false;
+                using (StringReader reader = new StringReader(obj))
+                {
+                    switch (rootElementName)
+                    {
+                        case "ArrayOfItem":
+                            ArrayOfItem? itemsWrapper = ItemListSerializer.Deserialize(reader) as ArrayOfItem;
+                            if (itemsWrapper?.Item != null)
+                            {
+                                SyncItems(itemsWrapper.Item);
+                                dataChanged = true;
+                            }
+                            break;
+
+                        case "ListOfCustomer":
+                            List<Customer>? customers = CustomerListSerializer.Deserialize(reader) as List<Customer>;
+                            if (customers != null)
+                            {
+                                SyncCustomers(customers);
+                                dataChanged = true;
+                            }
+                            break;
+
+                        case "ListOfCart":
+                            List<Cart>? carts = CartListSerializer.Deserialize(reader) as List<Cart>;
+                            if (carts != null)
+                            {
+                                SyncCarts(carts);
+                                dataChanged = true;
+                            }
+                            break;
+
+                        default:
+                            Debug.WriteLine($"[CLIENT] No handler for root: <{rootElementName}>");
+                            break;
+                    }
+                }
+
+                if (dataChanged)
+                    OnDataChanged.Invoke();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[CLIENT] Deserialization Error: {ex.Message} - for '<{rootElementName}>': ");
+                Debug.WriteLine($"  Received XML Snippet: {obj.Substring(0, Math.Min(obj.Length, 500))}");
+            }
         }
 
-        private void SyncItems(string xml)
+        private void SyncItems(ICollection<Item> xmlItems)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableProduct>));
-            using (StringReader reader = new StringReader(xml))
+            lock (_items)
             {
                 _items.Clear();
-
-                List<SerializableProduct> items = (List<SerializableProduct>)serializer.Deserialize(reader)!;
-                foreach (SerializableProduct item in items)
+                foreach (Item xmlItem in xmlItems.Where(x => x != null))
                 {
-                    _items[item.Id] = new Product(item.Id, item.Name, item.Price, item.MaintenanceCost);
-                }
-            }
-        }
-
-        private void SyncCustomers(string xml)
-        {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableCustomer>));
-            using (StringReader reader = new StringReader(xml))
-            {
-                _customers.Clear();
-
-                List<SerializableCustomer> customers = (List<SerializableCustomer>)serializer.Deserialize(reader)!;
-                foreach (SerializableCustomer customer in customers)
-                {
-                    List<IProduct> items = new List<IProduct>();
-                    foreach (SerializableProduct item in customer.Cart.Items)
+                    IProduct internalItem = xmlItem.ToInternalModel(); // --- Mapper ---
+                    if (internalItem != null)
                     {
-                        items.Add(new Product(item.Id, item.Name, item.Price, item.MaintenanceCost));
+                        _items[internalItem.Id] = internalItem;
                     }
-
-                    ICart inv = new Cart(customer.Cart.Id, customer.Cart.Capacity, items);
-                    _customers[customer.Id] = new Customer(customer.Id, customer.Name, customer.Money, inv);
-                    _carts[inv.Id] = inv;
                 }
             }
+
         }
 
-        private void SyncCarts(string xml)
+        private void SyncCustomers(List<Customer> xmlCustomers)
         {
-            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableCart>));
-            using (StringReader reader = new StringReader(xml))
+            lock (_customers)
+                lock (_carts)
+                {
+                    _carts.Clear();
+                    _customers.Clear();
+                    foreach (Customer xmlCustomer in xmlCustomers.Where(x => x != null))
+                    {
+                        ICustomer internalCustomer = xmlCustomer.ToInternalModel();
+                        if (internalCustomer != null)
+                        {
+                            _customers[internalCustomer.Id] = internalCustomer;
+
+                            if (internalCustomer.Cart != null && !_carts.ContainsKey(internalCustomer.Cart.Id))
+                            {
+                                _carts[internalCustomer.Cart.Id] = internalCustomer.Cart;
+                            }
+                        }
+                    }
+                }
+        }
+
+        private void SyncCarts(List<Cart> xmlCarts)
+        {
+            lock (_carts)
             {
                 _carts.Clear();
-
-                List<SerializableCart> carts = (List<SerializableCart>)serializer.Deserialize(reader)!;
-                foreach (SerializableCart inv in carts)
+                foreach (Cart xmlInv in xmlCarts.Where(x => x != null))
                 {
-                    List<IProduct> items = new List<IProduct>();
-                    foreach (SerializableProduct item in inv.Items)
+                    ICart internalInv = xmlInv.ToInternalModel();
+                    if (internalInv != null)
                     {
-                        items.Add(new Product(item.Id, item.Name, item.Price, item.MaintenanceCost));
+                        _carts[internalInv.Id] = internalInv;
                     }
-
-                    _carts[inv.Id] = new Cart(inv.Id, inv.Capacity, items);
                 }
             }
         }

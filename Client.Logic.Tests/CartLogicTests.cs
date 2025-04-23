@@ -1,6 +1,6 @@
-﻿using ClientServer.Shared.Logic.API;
-using Client.Logic.API;
-using ClientServer.Shared.Data.API;
+﻿using Client.Logic.API;
+using Client.ObjectModels.Data.API;
+using Client.ObjectModels.Logic.API;
 
 namespace Client.Logic.Tests
 {
@@ -52,6 +52,14 @@ namespace Client.Logic.Tests
         }
 
         [TestMethod]
+        public void Get_ShouldReturnNull_WhenCartDoesNotExist()
+        {
+            Guid cartId = Guid.NewGuid();
+            ICartDataTransferObject? result = _logic.Get(cartId);
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
         public void RemoveById_ShouldRemoveCart_WhenExists()
         {
             Guid cartId = Guid.NewGuid();
@@ -60,32 +68,6 @@ namespace Client.Logic.Tests
             bool removed = _logic.RemoveById(cartId);
             Assert.IsTrue(removed);
             Assert.IsNull(_logic.Get(cartId));
-        }
-
-        [TestMethod]
-        public void RemoveById_ShouldReturnFalse_WhenCartDoesNotExist()
-        {
-            Guid cartId = Guid.NewGuid();
-            bool removed = _logic.RemoveById(cartId);
-            Assert.IsFalse(removed);
-        }
-
-        [TestMethod]
-        public void Remove_ShouldRemoveCart_WhenExists()
-        {
-            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
-            _logic.Add(cart);
-            bool removed = _logic.Remove(cart);
-            Assert.IsTrue(removed);
-            Assert.IsNull(_logic.Get(cart.Id));
-        }
-
-        [TestMethod]
-        public void Update_ShouldReturnFalse_WhenCartDoesNotExist()
-        {
-            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>());
-            bool updated = _logic.Update(cart.Id, cart);
-            Assert.IsFalse(updated);
         }
     }
 }

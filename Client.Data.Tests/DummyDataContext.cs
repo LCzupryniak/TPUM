@@ -1,7 +1,4 @@
-﻿using Client.Data.API;
-using ClientServer.Shared.Data.API;
-using System;
-using System.Collections.Generic;
+﻿using Client.ObjectModels.Data.API;
 
 namespace Client.Data.Tests
 {

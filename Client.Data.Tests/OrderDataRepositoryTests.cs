@@ -1,4 +1,4 @@
-﻿using ClientServer.Shared.Data.API;
+﻿using Client.ObjectModels.Data.API;
 
 namespace Client.Data.Tests
 {
@@ -68,6 +68,21 @@ namespace Client.Data.Tests
             bool result = _repository.RemoveOrder(order);
 
             Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        public void RemoveById_ShouldRemoveOrder_WhenOrderExists()
+        {
+            Guid orderId = Guid.NewGuid();
+            DummyCustomer customer = new DummyCustomer("Customer1", 1000, new DummyCart(10));
+            List<IProduct> itemsToBuy = new List<IProduct> { new DummyProduct("TV", 100, 5) };
+            DummyOrder order = new DummyOrder(orderId, customer, itemsToBuy);
+            _mockContext.Orders[orderId] = order;
+
+            bool result = _repository.RemoveOrderById(orderId);
+
+            Assert.IsTrue(result);
+            Assert.IsFalse(_mockContext.Orders.ContainsKey(orderId));
         }
     }
 }

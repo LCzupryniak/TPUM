@@ -1,6 +1,6 @@
 ﻿using Client.Logic.API;
-using ClientServer.Shared.Logic.API;
-using ClientServer.Shared.Data.API;
+using Client.ObjectModels.Data.API;
+using Client.ObjectModels.Logic.API;
 
 namespace Client.Logic.Tests
 {
@@ -38,8 +38,6 @@ namespace Client.Logic.Tests
             public float Money { get; set; } = 100f;
             public ICart Cart { get; set; } = new TestCart();
         }
-
-
 
         [TestMethod]
         public void GetAll_ShouldReturnAllCustomers()
@@ -82,5 +80,40 @@ namespace Client.Logic.Tests
             Assert.IsNull(result);
         }
 
+        [TestMethod]
+        public void Add_ShouldAddCustomerToRepository()
+        {
+            ICustomerDataTransferObject customer = new DummyCustomerDataTransferObject(Guid.NewGuid(), "Customer1", 1000, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
+
+            _logic.Add(customer);
+
+            ICustomerDataTransferObject? result = _logic.Get(customer.Id);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(customer.Name, result.Name);
+        }
+
+        [TestMethod]
+        public void RemoveById_ShouldRemoveCustomer_WhenCustomerExists()
+        {
+            Guid customerId = Guid.NewGuid();
+            ICustomerDataTransferObject customer = new DummyCustomerDataTransferObject(customerId, "Customer1", 1000, new DummyCartDataTransferObject(Guid.NewGuid(), 10, new List<IProductDataTransferObject>()));
+            _logic.Add(customer);
+
+            bool result = _logic.RemoveById(customerId);
+
+            Assert.IsTrue(result);
+            ICustomerDataTransferObject? removedCustomer = _logic.Get(customerId);
+            Assert.IsNull(removedCustomer);
+        }
+
+        [TestMethod]
+        public void RemoveById_ShouldReturnFalse_WhenCustomerDoesNotExist()
+        {
+            Guid customerId = Guid.NewGuid();
+
+            bool result = _logic.RemoveById(customerId);
+
+            Assert.IsFalse(result);
+        }
     }
 }

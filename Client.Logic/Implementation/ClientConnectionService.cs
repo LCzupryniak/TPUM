@@ -1,7 +1,10 @@
 ﻿using Client.Data.Websocket;
+using Client.ObjectModels.Generated;
 using Client.Logic.API;
 using System.Net.WebSockets;
 using System.Text;
+using System.Xml.Serialization;
+using System.Xml;
 
 namespace Client.Logic.Implementation
 {
@@ -15,6 +18,8 @@ namespace Client.Logic.Implementation
         {
             Console.WriteLine(message);
         };
+
+        private static readonly XmlSerializer OrderSerializer = new XmlSerializer(typeof(Order));
 
         public async Task<bool> Connect(Uri peerUri)
         {
@@ -56,8 +61,10 @@ namespace Client.Logic.Implementation
                 await Task.FromResult(false);
                 return;
             }
-
-            await WebSocketClient.CurrentConnection.SendAsync("GET /items");
+            string requestXml = "<GetAllItemsRequest/>";
+            
+            ConnectionLogger?.Invoke($"Sending request: {requestXml}");
+            await WebSocketClient.CurrentConnection.SendAsync(requestXml);
         }
 
         public async Task FetchCarts()
@@ -68,8 +75,9 @@ namespace Client.Logic.Implementation
                 await Task.FromResult(false);
                 return;
             }
-
-            await WebSocketClient.CurrentConnection.SendAsync("GET /carts");
+            string requestXml = "<GetAllCartsRequest/>";
+            ConnectionLogger?.Invoke($"Sending request: {requestXml}");
+            await WebSocketClient.CurrentConnection.SendAsync(requestXml);
         }
 
         public async Task FetchCustomers()
@@ -80,8 +88,10 @@ namespace Client.Logic.Implementation
                 await Task.FromResult(false);
                 return;
             }
+            string requestXml = "<GetAllCustomersRequest/>";
 
-            await WebSocketClient.CurrentConnection.SendAsync("GET /customers");
+            ConnectionLogger?.Invoke($"Sending request: {requestXml}");
+            await WebSocketClient.CurrentConnection.SendAsync(requestXml);
         }
 
         public async Task CreateOrder(Guid id, Guid buyerId, IEnumerable<Guid> itemIds)
@@ -93,11 +103,37 @@ namespace Client.Logic.Implementation
                 return;
             }
 
-            string itemsString = string.Join(",", itemIds);
-            string message = $"POST /orders/{id}/buyer/{buyerId}/items/{itemsString}";
+            Order orderRequest = new Order
+            {
+                Id = id,
+                Buyer = new Customer { Id = buyerId },
+            };
+            foreach (Guid itemId in itemIds)
+            {
+                orderRequest.ItemsToBuy.Add(new Item { Id = itemId });
+            }
 
-            ConnectionLogger?.Invoke($"Creating order: {message}");
-            await WebSocketClient.CurrentConnection.SendAsync(message);
+            string orderXml;
+            try
+            {
+                using (StringWriter stringWriter = new StringWriter())
+                using (XmlWriter xmlWriter = System.Xml.XmlWriter.Create(stringWriter, new System.Xml.XmlWriterSettings { OmitXmlDeclaration = true }))
+                {
+                    XmlSerializerNamespaces namespaces = new XmlSerializerNamespaces();
+                    namespaces.Add("", "");
+
+                    OrderSerializer.Serialize(xmlWriter, orderRequest, namespaces);
+                    orderXml = stringWriter.ToString();
+                }
+            }
+            catch (Exception ex)
+            {
+                ConnectionLogger?.Invoke($"[ERROR] Failed to serialize Order request: {ex.Message}");
+                return;
+            }
+
+            ConnectionLogger?.Invoke($"Sending Order request XML: {orderXml.Substring(0, Math.Min(orderXml.Length, 200))}");
+            await WebSocketClient.CurrentConnection.SendAsync(orderXml);
         }
     }
 }

@@ -1,6 +1,6 @@
-﻿using ClientServer.Shared.Logic.API;
-using Client.Logic.API;
-using ClientServer.Shared.Data.API;
+﻿using Client.Logic.API;
+using Client.ObjectModels.Data.API;
+using Client.ObjectModels.Logic.API;
 
 namespace Client.Logic.Tests
 {
@@ -37,7 +37,7 @@ namespace Client.Logic.Tests
         [TestMethod]
         public void Get_ShouldReturnItem_WhenItemExists()
         {
-            DummyProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Mixer", 150, 8);
+            DummyProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Laptop", 150, 8);
             _logic.Add(item);
 
             IProductDataTransferObject? result = _logic.Get(item.Id);
@@ -55,7 +55,7 @@ namespace Client.Logic.Tests
         [TestMethod]
         public void RemoveById_ShouldRemoveItem_WhenItemExists()
         {
-            DummyProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Smartwatch", 120, 6);
+            DummyProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Tablet", 120, 6);
             _logic.Add(item);
             bool removed = _logic.RemoveById(item.Id);
 
@@ -67,6 +67,25 @@ namespace Client.Logic.Tests
         public void RemoveById_ShouldReturnFalse_WhenItemDoesNotExist()
         {
             bool removed = _logic.RemoveById(Guid.NewGuid());
+            Assert.IsFalse(removed);
+        }
+
+        [TestMethod]
+        public void Remove_ShouldRemoveItem_WhenItemExists()
+        {
+            DummyProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Smartwatch", 50, 2);
+            _logic.Add(item);
+            bool removed = _logic.Remove(item);
+
+            Assert.IsTrue(removed);
+            Assert.IsNull(_logic.Get(item.Id));
+        }
+
+        [TestMethod]
+        public void Remove_ShouldReturnFalse_WhenItemDoesNotExist()
+        {
+            DummyProductDataTransferObject item = new DummyProductDataTransferObject(Guid.NewGuid(), "Airwrap", 200, 10);
+            bool removed = _logic.Remove(item);
             Assert.IsFalse(removed);
         }
     }

@@ -1,4 +1,4 @@
-﻿using ClientServer.Shared.Data.API;
+﻿using Server.ObjectModels.Data.API;
 
 namespace Server.Logic.Tests
 {

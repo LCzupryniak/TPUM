@@ -1,5 +1,5 @@
-﻿using Client.Presentation.Model.API;
-using ClientServer.Shared.Logic.API;
+﻿using Client.ObjectModels.Logic.API;
+using Client.Presentation.Model.API;
 
 namespace Client.Presentation.Model.Tests
 {
@@ -29,8 +29,8 @@ namespace Client.Presentation.Model.Tests
             // Create Test DTOs
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
-            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Tablet", Price = 10, MaintenanceCost = 0 };
-            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Laptop", Price = 25, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Laptop", Price = 10, MaintenanceCost = 0 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Microphone", Price = 25, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
 
@@ -62,7 +62,7 @@ namespace Client.Presentation.Model.Tests
 
             IProductModel? item1Model = inv1Model.Items.FirstOrDefault(itm => itm.Id == _item1Id);
             Assert.IsNotNull(item1Model);
-            Assert.AreEqual("Tablet", item1Model.Name);
+            Assert.AreEqual("Laptop", item1Model.Name);
             Assert.AreEqual(10, item1Model.Price);
         }
 
@@ -76,7 +76,7 @@ namespace Client.Presentation.Model.Tests
             Assert.AreEqual(10, cart.Capacity);
             Assert.IsNotNull(cart.Items);
             Assert.AreEqual(2, cart.Items.Count());
-            Assert.AreEqual("Tablet", cart.Items.First().Name);
+            Assert.AreEqual("Laptop", cart.Items.First().Name);
         }
 
         [TestMethod]

@@ -1,5 +1,5 @@
-﻿using ClientServer.Shared.Data.API;
-using ClientServer.Shared.Logic.API;
+﻿using Server.ObjectModels.Data.API;
+using Server.ObjectModels.Logic.API;
 using Server.Logic.API;
 
 namespace Server.Logic.Tests
@@ -57,6 +57,17 @@ namespace Server.Logic.Tests
             Guid cartId = Guid.NewGuid();
             ICartDataTransferObject? result = _logic.Get(cartId);
             Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        public void RemoveById_ShouldRemoveCart_WhenExists()
+        {
+            Guid cartId = Guid.NewGuid();
+            DummyCartDataTransferObject cart = new DummyCartDataTransferObject(cartId, 10, new List<IProductDataTransferObject>());
+            _logic.Add(cart);
+            bool removed = _logic.RemoveById(cartId);
+            Assert.IsTrue(removed);
+            Assert.IsNull(_logic.Get(cartId));
         }
     }
 }

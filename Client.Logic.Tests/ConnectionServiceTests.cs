@@ -66,7 +66,7 @@ namespace Client.Logic.Tests
     //    {
     //        if (WebSocketClient.CurrentConnection != null)
     //        {
-    //            await WebSocketClient.Disconnect();
+    //            await   WebSocketClient.Disconnect();
     //        }
     //        await _connectionService.FetchCustomers();
     //        Assert.IsTrue(_logMessages.Any(m => m.Contains("No connection to server.")));

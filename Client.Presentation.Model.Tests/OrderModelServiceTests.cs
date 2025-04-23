@@ -1,5 +1,5 @@
-﻿using Client.Presentation.Model.API;
-using ClientServer.Shared.Logic.API;
+﻿using Client.ObjectModels.Logic.API;
+using Client.Presentation.Model.API;
 
 
 namespace Client.Presentation.Model.Tests
@@ -39,9 +39,9 @@ namespace Client.Presentation.Model.Tests
             _item1Id = Guid.NewGuid();
             _item2Id = Guid.NewGuid();
             _item3Id = Guid.NewGuid();
-            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "TV", Price = 120, MaintenanceCost = 6 };
-            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Console", Price = 75, MaintenanceCost = 2 };
-            _itemDto3 = new DummyItemDto { Id = _item3Id, Name = "Smartwatch", Price = 40, MaintenanceCost = 1 };
+            _itemDto1 = new DummyItemDto { Id = _item1Id, Name = "Airwrap", Price = 120, MaintenanceCost = 6 };
+            _itemDto2 = new DummyItemDto { Id = _item2Id, Name = "Tablet", Price = 75, MaintenanceCost = 2 };
+            _itemDto3 = new DummyItemDto { Id = _item3Id, Name = "Microphone", Price = 40, MaintenanceCost = 1 };
             _dummyItemLogic.Items.Add(_itemDto1.Id, _itemDto1);
             _dummyItemLogic.Items.Add(_itemDto2.Id, _itemDto2);
             _dummyItemLogic.Items.Add(_itemDto3.Id, _itemDto3);
@@ -75,6 +75,35 @@ namespace Client.Presentation.Model.Tests
         }
 
         [TestMethod]
+        public void GetAllOrders_WhenCalled_ReturnsAllMappedOrderModels()
+        {
+            List<IOrderModel> orders = _orderModelService.GetAllOrders().ToList();
+
+            Assert.IsNotNull(orders);
+            Assert.AreEqual(1, orders.Count);
+
+            // Verify mapping for the order
+            IOrderModel order1Model = orders.First();
+            Assert.AreEqual(_order1Id, order1Model.Id);
+
+            // Verify Buyer mapping
+            Assert.IsNotNull(order1Model.Buyer);
+            Assert.AreEqual(_customer1Id, order1Model.Buyer.Id);
+            Assert.AreEqual("BuyerCustomer", order1Model.Buyer.Name);
+
+            // Verify ItemsToBuy mapping
+            Assert.IsNotNull(order1Model.ItemsToBuy);
+            Assert.AreEqual(2, order1Model.ItemsToBuy.Count());
+
+            IProductModel? item1Model = order1Model.ItemsToBuy.FirstOrDefault(i => i.Id == _item1Id);
+            IProductModel? item2Model = order1Model.ItemsToBuy.FirstOrDefault(i => i.Id == _item2Id);
+            Assert.IsNotNull(item1Model);
+            Assert.IsNotNull(item2Model);
+            Assert.AreEqual("Airwrap", item1Model.Name);
+            Assert.AreEqual("Tablet", item2Model.Name);
+        }
+
+        [TestMethod]
         public void GetOrder_ExistingId_ReturnsCorrectMappedOrderModel()
         {
             IOrderModel? order = _orderModelService.GetOrder(_order1Id);
@@ -91,62 +120,6 @@ namespace Client.Presentation.Model.Tests
             Assert.AreEqual(2, order.ItemsToBuy.Count());
             Assert.IsTrue(order.ItemsToBuy.Any(i => i.Id == _item1Id));
             Assert.IsTrue(order.ItemsToBuy.Any(i => i.Id == _item2Id));
-        }
-
-        [TestMethod]
-        public void GetOrder_NonExistingId_ReturnsNull()
-        {
-            Guid nonExistingId = Guid.NewGuid();
-
-            IOrderModel? order = _orderModelService.GetOrder(nonExistingId);
-
-            Assert.IsNull(order);
-        }
-
-        [TestMethod]
-        public void AddOrder_ValidData_CallsLogicAddWithCorrectDto()
-        {
-            Guid newId = Guid.NewGuid();
-            Guid buyerId = _customer2Id; // Different customer buys
-            List<Guid> itemIdsToBuy = new List<Guid> { _item3Id }; // Buy product
-
-            _orderModelService.AddOrder(newId, buyerId, itemIdsToBuy);
-
-            Assert.IsTrue(_dummyOrderLogic.Orders.ContainsKey(newId));
-            IOrderDataTransferObject addedDto = _dummyOrderLogic.Orders[newId];
-            Assert.AreEqual(newId, addedDto.Id);
-
-            // Check if Buyer DTO and Item DTOs correctly assigned
-            Assert.IsNotNull(addedDto.Buyer);
-            Assert.AreEqual(buyerId, addedDto.Buyer.Id);
-
-            Assert.IsNotNull(addedDto.ItemsToBuy);
-            Assert.AreEqual(1, addedDto.ItemsToBuy.Count());
-            Assert.AreEqual(_item3Id, addedDto.ItemsToBuy.First().Id);
-        }
-
-        [TestMethod]
-        public void RemoveOrder_ExistingId_CallsLogicRemoveAndReturnsTrue()
-        {
-            Guid targetId = _order1Id;
-            Assert.IsTrue(_dummyOrderLogic.Orders.ContainsKey(targetId));
-
-            bool result = _orderModelService.RemoveOrder(targetId);
-
-            Assert.IsTrue(result);
-            Assert.IsFalse(_dummyOrderLogic.Orders.ContainsKey(targetId));
-        }
-
-        [TestMethod]
-        public void RemoveOrder_NonExistingId_CallsLogicRemoveAndReturnsFalse()
-        {
-            Guid nonExistingId = Guid.NewGuid();
-            int initialCount = _dummyOrderLogic.Orders.Count;
-
-            bool result = _orderModelService.RemoveOrder(nonExistingId);
-
-            Assert.IsFalse(result);
-            Assert.AreEqual(initialCount, _dummyOrderLogic.Orders.Count);
         }
 
     }

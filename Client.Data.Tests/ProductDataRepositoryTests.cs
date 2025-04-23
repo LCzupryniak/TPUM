@@ -1,8 +1,4 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Client.Data.API;
-using System;
-using System.Linq;
-using ClientServer.Shared.Data.API;
+﻿using Client.ObjectModels.Data.API;
 
 namespace Client.Data.Tests
 {

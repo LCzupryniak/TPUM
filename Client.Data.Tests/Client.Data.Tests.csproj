@@ -14,7 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Client.Data\Client.Data.csproj" />
-    <ProjectReference Include="..\ClientServer.Shared\ClientServer.Shared.csproj" />
+    <ProjectReference Include="..\Client.ObjectModels\Client.ObjectModels.csproj" />
   </ItemGroup>
 
   <ItemGroup>

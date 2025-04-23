@@ -1,5 +1,5 @@
 ﻿using Client.Data.Implementation;
-using ClientServer.Shared.Data.API;
+using Client.ObjectModels.Data.API;
 
 namespace Client.Data.API
 {

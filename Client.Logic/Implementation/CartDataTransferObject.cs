@@ -1,4 +1,4 @@
-﻿using ClientServer.Shared.Logic.API;
+﻿using Client.ObjectModels.Logic.API;
 
 namespace Client.Logic.Implementation
 {

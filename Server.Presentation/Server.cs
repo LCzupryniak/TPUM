@@ -1,11 +1,46 @@
-﻿using ClientServer.Shared.Logic.API;
-using ClientServer.Shared.WebSocket;
+﻿using Server.ObjectModels.Logic.API;
+using Server.ObjectModels.WebSocket;
+using Server.ObjectModels.Generated;
+using Server.Presentation.Mapping;
 using Server.Logic.API;
 using System.Globalization;
 using System.Xml.Serialization;
+using System.Xml;
 
 namespace Server.Presentation
 {
+    public static class FileLogger
+    {
+        private static readonly string LogFilePath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "server_log.txt");
+        private static readonly object FileLock = new object();
+
+        public static void Log(string message)
+        {
+            try
+            {
+                lock (FileLock)
+                {
+                    string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} | INFO | {message}{Environment.NewLine}";
+                    File.AppendAllText(LogFilePath, logEntry);
+                }
+            }
+            catch (Exception ex) { Console.WriteLine($"!!! LOG FAIL: {ex.Message} !!! {message}"); } // Awaryjny fallback
+        }
+        public static void LogError(string message, Exception? ex = null)
+        {
+            try
+            {
+                lock (FileLock)
+                {
+                    string logEntry = $"{DateTime.Now:yyyy-MM-dd HH:mm:ss.fff} | ERROR| {message}{(ex != null ? $": {ex.Message}" : "")}{Environment.NewLine}";
+                    if (ex?.StackTrace != null) logEntry += $" | StackTrace: {ex.StackTrace}{Environment.NewLine}";
+                    File.AppendAllText(LogFilePath, logEntry);
+                }
+            }
+            catch (Exception logEx) { Console.WriteLine($"!!! LOG FAIL: {logEx.Message} !!! {message} - {ex?.Message}"); }
+        }
+    }
+
     internal static class Server
     {
         private static ICustomerLogic _customerLogic = LogicFactory.CreateCustomerLogic();
@@ -16,7 +51,12 @@ namespace Server.Presentation
         private static IMaintenanceTracker _maintenanceTracker = MaintenanceFactory.CreateTracker();
         private static IMaintenanceReporter _maintenanceReporter = MaintenanceFactory.CreateReporter();
 
-        private static WebSocketConnection CurrentConnection = null!;
+        private static WebSocketConnection? CurrentConnection = null!;
+
+        private static readonly XmlSerializer ItemListSerializer = new XmlSerializer(typeof(ArrayOfItem));
+        private static readonly XmlSerializer CustomerListSerializer = new XmlSerializer(typeof(List<Customer>), new XmlRootAttribute("ListOfCustomer"));
+        private static readonly XmlSerializer CartListSerializer = new XmlSerializer(typeof(List<Cart>), new XmlRootAttribute("ListOfCart"));
+        private static readonly XmlSerializer OrderSerializer = new XmlSerializer(typeof(Order));
 
         private static Timer? _maintenanceTimer = null;
         private static TimeSpan _interval = TimeSpan.FromSeconds(5);
@@ -25,12 +65,15 @@ namespace Server.Presentation
         {
             CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
 
-            _maintenanceReporter.Subscribe(_maintenanceTracker, () => { }, (Exception e) => { }, (ICustomerDataTransferObject next) =>
-            {
-                _customerLogic.DeduceMaintenanceCost(next);
-            });
+            _maintenanceReporter.Subscribe(_maintenanceTracker,
+               () => { FileLogger.Log("[MAINTENANCE] Tracker completed."); },
+               (e) => { FileLogger.LogError("[MAINTENANCE] Tracker error", e); },
+               (next) =>
+               {
+                   try { _customerLogic.DeduceMaintenanceCost(next); }
+                   catch (Exception ex) { FileLogger.LogError($"[MAINTENANCE] Failed DeduceCost for Customer {next?.Id}", ex); }
+               });
 
-            Console.WriteLine($"Starting maintenance timer with interval {_interval.TotalSeconds}s.");
             _maintenanceTimer = new Timer(
                 MaintenanceTick,
                 null,
@@ -38,7 +81,8 @@ namespace Server.Presentation
                 _interval
             );
 
-            Console.WriteLine("[Server]: Starting WebSocket server on port 9081...");
+            //Console.WriteLine("[Server]: Starting WebSocket server on port 9081...");
+            FileLogger.Log("[Server] Starting WebSocket server on port 9081...");
             await WebSocketServer.Server(9081, ConnectionHandler);
         }
 
@@ -46,110 +90,122 @@ namespace Server.Presentation
         {
             CurrentConnection = webSocketConnection;
             webSocketConnection.onMessage = ParseMessage;
-            webSocketConnection.onClose = () => { Console.WriteLine("[Server]: Connection closed"); };
-            webSocketConnection.onError = () => { Console.WriteLine("[Server]: Connection error encountered"); };
+            webSocketConnection.onClose = () => { FileLogger.Log("[Server]: Connection closed"); };
+            webSocketConnection.onError = () => { FileLogger.Log("[Server]: Connection error encountered"); };
 
-            Console.WriteLine("[Server]: New connection established successfully");
+            FileLogger.Log("[Server]: New connection established successfully");
+
+        }
+
+        private static async Task SendXmlAsync<T>(T data, XmlSerializer serializer) where T : class
+        {
+            if (CurrentConnection == null || data == null || serializer == null) return;
+            try
+            {
+                string xml;
+                using (StringWriter stringWriter = new StringWriter())
+                using (XmlWriter xmlWriter = XmlWriter.Create(stringWriter, new XmlWriterSettings { OmitXmlDeclaration = true, Indent = false })) // Bez deklaracji, bez wcięć
+                {
+                    XmlSerializerNamespaces ns = new XmlSerializerNamespaces();
+                    ns.Add("", "");
+                    serializer.Serialize(xmlWriter, data, ns);
+                    xml = stringWriter.ToString();
+                }
+                await CurrentConnection.SendAsync(xml);
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError($"[ERROR] Failed SendXmlAsync for type {typeof(T).Name}", ex);
+            }
         }
 
         private async static Task SyncItems()
         {
-            IEnumerable<IProductDataTransferObject> items = _itemLogic.GetAll();
-            List<SerializableProduct> itemsToSerialize = items.Select(item => new SerializableProduct(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList();
+            if (CurrentConnection == null) return;
 
-            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableProduct>));
-            string xml;
-            using (StringWriter writer = new StringWriter())
+            try
             {
-                serializer.Serialize(writer, itemsToSerialize);
-                xml = writer.ToString();
+                IEnumerable<IProductDataTransferObject> items = _itemLogic.GetAll();
+                ArrayOfItem xmlData = items.ToXmlModelArrayOfItem();
+
+                await SendXmlAsync(xmlData, ItemListSerializer);
+                FileLogger.Log("[SERVER]: Sync items");
             }
-
-            // Send the xml to the client
-            await CurrentConnection.SendAsync("ITEMS|" + xml);
-
-            Console.WriteLine("[SERVER]: Sync items");
+            catch (Exception ex)
+            {
+                FileLogger.LogError($"[ERROR] Failed to sync items: {ex.Message}");
+            }
         }
 
         private async static Task SyncCarts()
         {
-            IEnumerable<ICartDataTransferObject> inves = _cartLogic.GetAll();
-            List<SerializableCart> cartsToSerialize = inves.Select(inv =>
-                new SerializableCart(inv.Id, inv.Capacity,
-                    inv.Items.Select(item => new SerializableProduct(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
-                ).ToList();
-
-            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableCart>));
-            string xml;
-            using (StringWriter writer = new StringWriter())
+            if (CurrentConnection == null) return;
+            try
             {
-                serializer.Serialize(writer, cartsToSerialize);
-                xml = writer.ToString();
+                IEnumerable<ICartDataTransferObject> inves = _cartLogic.GetAll();
+                List<Cart> xmlData = inves.ToXmlModelList();
+
+                await SendXmlAsync(xmlData, CartListSerializer);
+
+                FileLogger.Log("[SERVER]: Sync carts");
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError($"[ERROR] Failed to sync carts: {ex.Message}");
             }
 
-            // Send the xml to the client
-            await CurrentConnection.SendAsync("CARTS|" + xml);
-
-            Console.WriteLine("[SERVER]: Sync carts");
         }
 
         private async static Task SyncCustomers()
         {
-            IEnumerable<ICustomerDataTransferObject> customers = _customerLogic.GetAll();
-            List<SerializableCustomer> customersToSerialize = customers.Select(customer =>
-                new SerializableCustomer(customer.Id, customer.Name, customer.Money,
-                    new SerializableCart(customer.Cart.Id, customer.Cart.Capacity,
-                    customer.Cart.Items.Select(item => new SerializableProduct(item.Id, item.Name, item.Price, item.MaintenanceCost)).ToList())
-                )).ToList();
-
-            XmlSerializer serializer = new XmlSerializer(typeof(List<SerializableCustomer>));
-            string xml;
-            using (StringWriter writer = new StringWriter())
+            if (CurrentConnection == null) return;
+            try
             {
-                serializer.Serialize(writer, customersToSerialize);
-                xml = writer.ToString();
+                IEnumerable<ICustomerDataTransferObject> customers = _customerLogic.GetAll();
+                List<Customer> xmlData = customers.ToXmlModelList();
+
+                await SendXmlAsync(xmlData, CustomerListSerializer);
+
+                FileLogger.Log("[SERVER]: Sync customers");
+            }
+            catch (Exception ex)
+            {
+                FileLogger.LogError($"[ERROR] Failed to sync customers: {ex.Message}");
             }
 
-            // Send the xml to the client
-            await CurrentConnection.SendAsync("CUSTOMERS|" + xml);
-
-            Console.WriteLine("[SERVER]: Sync customers");
         }
 
-        private static async Task CreateOrder(string message)
+        private static async Task CreateOrder(IOrderDataTransferObject orderDto)
         {
-            // Example message: "POST /orders/{id}/buyer/{buyerId}/items/{item1},{item2},..."
-            string[] parts = message.Split(new[] { "POST /orders/", "/buyer/", "/items/" }, StringSplitOptions.RemoveEmptyEntries);
-
-            if (parts.Length != 3)
-                return;
-
-            Guid orderId = Guid.Parse(parts[0]);
-            Guid buyerId = Guid.Parse(parts[1]);
-            List<Guid> itemIds = parts[2].Split(',', StringSplitOptions.RemoveEmptyEntries)
-                                    .Select(Guid.Parse)
-                                    .ToList();
-
-            ICustomerDataTransferObject? buyerDto = _customerLogic.Get(buyerId);
-            if (buyerDto == null)
-                return;
-
-            List<IProductDataTransferObject> itemDtos = new List<IProductDataTransferObject>();
-            foreach (Guid itemId in itemIds)
+            try
             {
-                IProductDataTransferObject? itemDto = _itemLogic.Get(itemId);
-                if (itemDto == null)
+                if (orderDto == null || orderDto.Buyer == null)
+                {
+                    FileLogger.LogError("[SERVER] Invalid order DTO received in CreateOrder.");
                     return;
+                }
 
-                itemDtos.Add(itemDto);
+                ICustomerDataTransferObject customer = _customerLogic.Get(orderDto.Buyer.Id)!;
+
+                List<IProductDataTransferObject> itemsToBuy = new List<IProductDataTransferObject>();
+
+                foreach (IProductDataTransferObject item in orderDto.ItemsToBuy)
+                {
+                    itemsToBuy.Add(_itemLogic.Get(item.Id)!);
+                }
+
+                IOrderDataTransferObject order = new TransientOrderDTO(orderDto.Id, customer, itemsToBuy);
+
+                _orderLogic.Add(order);
+                _orderLogic.PeriodicOrderProcessing();
+
+                FileLogger.Log($"[SERVER] Order {order.Id} added");
+                await SynchronizeWithClients();
             }
-
-            TransientOrderDTO transientDto = new TransientOrderDTO(orderId, buyerDto, itemDtos);
-            _orderLogic.Add(transientDto);
-
-            _orderLogic.PeriodicOrderProcessing(); // process the order immediately
-
-            await SynchronizeWithClients();
+            catch (Exception ex)
+            {
+                FileLogger.LogError($"[ERROR] Failed CreateOrder for ID {orderDto?.Id}", ex);
+            }
         }
 
         private static async Task SynchronizeWithClients()
@@ -161,16 +217,27 @@ namespace Server.Presentation
 
         private static async void ParseMessage(string message)
         {
-            Console.WriteLine($"[CLIENT]: {message}");
+            FileLogger.Log($"[CLIENT]: {message}");
 
-            if (message.Contains("GET /items"))
-                await SyncItems();
-            else if (message.Contains("GET /customers"))
-                await SyncCustomers();
-            else if (message.Contains("GET /carts"))
-                await SyncCarts();
-            else if (message.Contains("POST /orders"))
-                await CreateOrder(message);
+            if (message.Trim().StartsWith("<"))
+            {
+                // żądanie XML
+                await HandleXmlRequest(message);
+            }
+            else
+            {
+                if (message.Contains("GET /items"))
+                    await SyncItems();
+                else if (message.Contains("GET /customers"))
+                    await SyncCustomers();
+                else if (message.Contains("GET /carts"))
+                    await SyncCarts();
+                //else if (message.Contains("POST /orders")) // powinno już lecieć po XML (HandleXmlRequest)
+                //    await CreateOrder(message);
+                else
+                    Console.WriteLine($"[SERVER] Unknown command received: {message}");
+            }
+
         }
 
         private static void MaintenanceTick(object? state)
@@ -181,6 +248,62 @@ namespace Server.Presentation
             }
 
             Task.Run(async () => { await SynchronizeWithClients(); });
+        }
+
+        private static async Task HandleXmlRequest(string xmlMessage)
+        {
+            string rootElementName;
+            try
+            {
+                using (StringReader reader = new StringReader(xmlMessage))
+                using (XmlReader xmlReader = XmlReader.Create(reader))
+                {
+                    xmlReader.MoveToContent();
+                    rootElementName = xmlReader.Name;
+                }
+                FileLogger.Log($"[SERVER] Handling XML request with root: <{rootElementName}>");
+
+                using (StringReader reader = new StringReader(xmlMessage))
+                {
+                    switch (rootElementName)
+                    {
+                        case "Order": // Klient wysyła zamówienie spakowane w XML
+                            Order? xmlOrder = OrderSerializer.Deserialize(reader) as Order;
+                            if (xmlOrder != null)
+                            {
+                                IOrderDataTransferObject? orderDto = xmlOrder.ToLogicDto();
+                                if (orderDto != null)
+                                {
+                                    await CreateOrder(orderDto);
+                                }
+                                else { FileLogger.LogError("[SERVER] Failed mapping Order XML to DTO."); }
+                            }
+                            else { FileLogger.LogError("[SERVER] Failed deserializing Order XML."); }
+                            break;
+
+                        case "GetAllItemsRequest":
+                            await SyncItems();
+                            break;
+
+                        case "GetAllCustomersRequest":
+                            await SyncCustomers();
+                            break;
+
+                        case "GetAllCarts":
+                            await SyncCarts();
+                            break;
+
+                        default:
+                            FileLogger.Log($"[SERVER] No handler for XML request root: <{rootElementName}>.");
+                            break;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Failed to handle XML request: {ex.Message}");
+                Console.WriteLine($"  Received XML: {xmlMessage.Substring(0, Math.Min(xmlMessage.Length, 500))}");
+            }
         }
     }
 

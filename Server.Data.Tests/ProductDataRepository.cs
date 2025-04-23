@@ -1,5 +1,5 @@
 ﻿using Server.Data.API;
-using ClientServer.Shared.Data.API;
+using Server.ObjectModels.Data.API;
 
 namespace Server.Data.Tests
 {
@@ -51,6 +51,16 @@ namespace Server.Data.Tests
 
             Assert.IsTrue(result);
             Assert.IsFalse(_mockContext.Items.ContainsKey(itemId));
+        }
+
+        [TestMethod]
+        public void Remove_ShouldReturnFalse_WhenItemDoesNotExist()
+        {
+            DummyProduct item = new DummyProduct(Guid.NewGuid(), "TV", 100, 5);
+
+            bool result = _repository.RemoveItem(item);
+
+            Assert.IsFalse(result);
         }
     }
 }

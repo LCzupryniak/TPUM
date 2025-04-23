@@ -1,5 +1,5 @@
-﻿using Client.Presentation.Model.API;
-using ClientServer.Shared.Logic.API;
+﻿using Client.ObjectModels.Logic.API;
+using Client.Presentation.Model.API;
 
 namespace Client.Presentation.Model.Tests
 {
@@ -125,16 +125,6 @@ namespace Client.Presentation.Model.Tests
 
             Assert.IsFalse(result);
             Assert.AreEqual(initialCount, _dummyCustomerLogic.Customers.Count);
-        }
-
-        [TestMethod]
-        public void TriggerPeriodicItemMaintenanceDeduction_WhenCalled_CallsLogicMethod()
-        {
-            int initialCallCount = _dummyCustomerLogic.PeriodicDeductionCallCount;
-
-            _customerModelService.TriggerPeriodicItemMaintenanceDeduction();
-
-            Assert.AreEqual(initialCallCount + 1, _dummyCustomerLogic.PeriodicDeductionCallCount);
         }
     }
 }

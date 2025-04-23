@@ -1,5 +1,5 @@
-﻿using ClientServer.Shared.Data.API;
-using ClientServer.Shared.Logic.API;
+﻿using Server.ObjectModels.Data.API;
+using Server.ObjectModels.Logic.API;
 using Server.Logic.API;
 
 namespace Server.Logic.Tests
@@ -44,7 +44,6 @@ namespace Server.Logic.Tests
             public ICustomer Buyer { get; set; } = new TestCustomer();
             public IEnumerable<IProduct> ItemsToBuy { get; set; } = new List<IProduct>();
         }
-
 
         [TestMethod]
         public void GetAll_ShouldReturnAllOrders()
